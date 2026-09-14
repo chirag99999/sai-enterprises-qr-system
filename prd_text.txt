@@ -1,0 +1,530 @@
+
+
+
+PRODUCT REQUIREMENTS DOCUMENT
+
+
+In-Store ₹500 Reward &amp; Review Kiosk
+
+A customer-facing iPad/web experience for food-brand stores that captures mobile numbers, drives social engagement and verified reviews, and unlocks a ₹500 voucher after the required action is completed.
+Document
+Value
+Product
+In-Store Reward Kiosk
+Primary surface
+Store iPad / kiosk web app
+Version
+1.0
+Status
+Proposed
+Primary reward
+₹500 voucher (campaign-configurable)
+
+
+
+
+1. Executive Summary
+
+The product is a lightweight in-store customer engagement kiosk. A customer is invited to claim a ₹500 benefit. They can either enter their mobile number and complete the required review action to unlock the reward, or skip registration and continue to the brand’s social/community destinations without receiving the gated ₹500 voucher.
+
+The experience must feel like a positive reward journey—not a form or survey. The kiosk should minimize friction, avoid long registration, and make the value exchange explicit before the customer shares a number.
+
+
+2. Problem Statement
+
+Food-brand stores have high-intent customers in a physical environment but often lack a simple mechanism to convert that moment into durable customer identity, first-party contactability, reviews, and repeat engagement. The product should turn a short in-store interaction into a measurable customer relationship while protecting unit economics and preventing obvious voucher abuse.
+
+
+3. Goals &amp; Non-Goals
+
+
+3.1 Goals
+
+
+Capture a customer mobile number with a clear, valuable reason to do so.
+
+
+Drive customers to the brand’s review destination before the ₹500 reward is released.
+
+
+Provide optional social follow/subscribe actions without making unverifiable social actions a hard reward gate.
+
+
+Issue a unique, trackable ₹500 voucher after the required completion state is reached.
+
+
+Create a fast, pleasant kiosk journey designed for use while standing in-store.
+
+
+Give operations a way to configure reward amount, copy, links, validity, and campaign dates.
+
+
+3.2 Non-Goals
+
+
+Replacing the brand’s POS or full loyalty platform in V1.
+
+
+Collecting a long customer profile during the kiosk flow.
+
+
+Automatically claiming or fabricating reviews on behalf of customers.
+
+
+Guaranteeing that a customer actually follows Instagram/YouTube/Facebook; those actions should be tracked only where technically verifiable.
+
+
+4. Users &amp; Context
+User
+Context
+Need
+Walk-in customer
+Standing in store; short attention window
+Understand reward and complete it quickly
+Store staff
+Customer may ask for help
+Know the flow and resolve basic issues
+Marketing/CRM team
+Campaign management
+Configure reward, links, copy, and analyze conversion
+Store manager
+Daily operations
+See campaign performance and voucher usage
+Admin
+System management
+Manage stores, users, settings, and audit trail
+
+
+
+
+5. Core Customer Journey
+Step
+Screen / State
+Customer Action
+System Outcome
+1
+Welcome
+Sees ₹500 offer and taps Get ₹500 or Skip
+Branch selected
+2A
+Phone Entry
+Enters mobile number
+Number validated; OTP optional/configurable
+2B
+Skip
+Declines number
+Opens social/community hub
+3
+Review Journey
+Opens configured review destination
+Review CTA launched; status tracked by return/session state where possible
+4
+Return / Completion
+Confirms they completed the requested review action
+Eligibility evaluated
+5
+Reward Unlock
+Views success screen
+Unique voucher generated and shown/sent
+6
+Redeem
+Uses voucher at POS or online
+Voucher redemption recorded
+
+
+
+
+6. Screen-by-Screen Requirements
+
+
+6.1 Welcome Screen
+
+Purpose: explain the value exchange immediately and create a low-friction decision.
+
+
+Primary headline: “Get ₹500 OFF your order”.
+
+
+Supporting copy: “Complete 2 quick steps and unlock your ₹500 food voucher.”
+
+
+Primary CTA: “GET MY ₹500”.
+
+
+Secondary action: “Skip”.
+
+
+Show campaign validity/terms in a compact, legible format.
+
+
+Do not hide the skip path or use dark patterns.
+
+
+6.2 Mobile Number Screen
+
+
+Single mobile-number field with country code prefilled/configurable.
+
+
+Primary CTA: “CONTINUE”.
+
+
+Explain why the number is collected (voucher delivery, campaign identification, or both).
+
+
+Support OTP only if required by campaign/security policy; avoid unnecessary steps in-store.
+
+
+Prevent duplicate active reward claims according to campaign rules.
+
+
+6.3 Review + Social Screen
+
+
+Lead with the reward status: “Your ₹500 voucher is reserved. One quick thing before we unlock it.”
+
+
+Primary action: open configured Google review destination (or approved review provider).
+
+
+Optional actions: Instagram, YouTube, Facebook, or other brand destinations.
+
+
+Social actions are engagement opportunities, not the sole hard gate for reward eligibility.
+
+
+Provide a “Back” action and clear completion instruction.
+
+
+6.4 Reward Unlock Screen
+
+
+Celebrate completion with clear success state.
+
+
+Display voucher value, voucher code, validity, and redemption conditions.
+
+
+Offer “Use My ₹500” / “Show at Counter” action depending on redemption model.
+
+
+Send voucher to mobile number where configured.
+
+
+Prevent duplicate generation for the same eligible campaign + customer.
+
+
+6.5 Skip / Social Hub
+
+
+Customer can continue without providing mobile number.
+
+
+Show Instagram, YouTube, Facebook, Google Review, and optionally brand website/menu.
+
+
+Do not repeatedly interrupt the customer with phone capture prompts.
+
+
+Clearly state that the ₹500 voucher requires the campaign’s eligible completion path.
+
+
+7. Functional Requirements
+ID
+Requirement
+Description
+Priority
+FR-01
+Campaign configuration
+Admin can set reward amount, start/end date, copy, terms, store scope, and destination URLs.
+Must
+FR-02
+Mobile capture
+System validates mobile number format and stores consent metadata where required.
+Must
+FR-03
+Customer identity
+System matches existing customer by normalized mobile number.
+Must
+FR-04
+Reward reservation
+System creates an eligibility/session record when customer starts the claim.
+Must
+FR-05
+Review destination
+System opens the configured review page/app destination.
+Must
+FR-06
+Completion state
+System supports a campaign-defined method for marking review step complete.
+Must
+FR-07
+Voucher generation
+System issues one unique voucher per eligible claim under configured anti-abuse rules.
+Must
+FR-08
+Voucher delivery
+System can show the voucher on-screen and optionally send it via configured channel.
+Must
+FR-09
+Social destinations
+System displays configurable social links with brand icons/names.
+Should
+FR-10
+Skip path
+Customer can bypass phone capture and view the social/community hub.
+Must
+FR-11
+Analytics
+System records funnel events with timestamp, store, campaign, and anonymous/session identifiers.
+Must
+FR-12
+POS redemption
+System exposes a redemption status or integration mechanism so redeemed vouchers cannot be reused.
+Must
+
+
+
+
+8. Review Verification &amp; Trust Model
+
+The product should not claim technical verification that it cannot actually perform. Many social platforms do not reliably expose a way for a kiosk to confirm that a specific customer followed/subscribed. Therefore, V1 should treat the review journey as the primary campaign completion step and support one of the following implementation models:
+
+
+Model A — Direct review CTA + user confirmation: open the review link, then return to the kiosk and tap “I’ve completed my review”. This is simple but relies on customer honesty.
+
+
+Model B — Provider/API verification: use an approved review platform integration if it exposes a reliable completion signal. This is stronger but more complex.
+
+
+Model C — Staff-assisted validation: staff confirms the customer’s completion at the counter for high-value campaigns. Use sparingly because it adds operational friction.
+
+Recommended V1: Model A with rate limits, one reward per mobile number per campaign, a campaign-specific redemption code, and clear audit logs. If review authenticity or fraud becomes material, move toward provider verification or staff validation.
+
+
+9. Data Model
+Entity
+Key Fields
+Customer
+customer_id, mobile_number_hash/secure value, created_at, consent_status
+Campaign
+campaign_id, name, reward_amount, valid_from, valid_to, terms, store_scope
+Claim Session
+session_id, campaign_id, store_id, customer_id/session_id, started_at, status
+Engagement Event
+event_id, session_id, event_type, timestamp, metadata
+Voucher
+voucher_id, code, campaign_id, customer_id, value, issued_at, expires_at, status
+Redemption
+voucher_id, redeemed_at, store_id, order_reference, status
+
+
+
+
+10. Admin / Back-Office Requirements
+
+
+Campaign create/edit/publish/unpublish.
+
+
+Set reward amount and budget/cap.
+
+
+Assign campaign to one or more stores.
+
+
+Configure review URL and social links.
+
+
+Set campaign terms, validity, daily or total redemption limits.
+
+
+View funnel: starts → mobile capture → review CTA → completion → voucher issued → redeemed.
+
+
+Export campaign performance data.
+
+
+View fraud/risk flags and blocked claims.
+
+
+Manage kiosk/device activation and store association.
+
+
+11. Non-Functional Requirements
+Area
+Requirement
+Target
+Performance
+Initial screen usable on kiosk connection
+≤ 2.5s perceived load on normal store Wi-Fi
+Responsiveness
+Touch targets and layout optimized for iPad/tablet
+100% touch-friendly
+Availability
+Kiosk should tolerate temporary network instability
+Graceful error + retry
+Security
+Protect customer mobile numbers and voucher claims
+Encryption in transit; restricted access
+Privacy
+Collect only required data and capture consent where applicable
+Configurable consent + retention
+Accessibility
+Readable text, contrast, touch targets, non-color-only status
+WCAG-informed kiosk baseline
+Analytics
+All funnel transitions are measurable
+Event-level tracking
+
+
+
+
+12. Edge Cases &amp; Error Handling
+
+
+Invalid mobile number → inline validation; do not advance.
+
+
+OTP failure/timeout → resend and retry path; avoid locking customer out unnecessarily.
+
+
+Customer closes review page → allow return without losing claim session.
+
+
+Network outage → show retry state; do not falsely promise reward issuance.
+
+
+Customer submits same number again → resume existing eligible claim or explain prior status.
+
+
+Voucher already issued → show existing voucher rather than minting another.
+
+
+Voucher expired → explain expiry and direct customer to staff/support policy.
+
+
+Review link unavailable → show fallback destination and allow staff-assisted resolution.
+
+
+Customer presses Skip → immediately show social/community hub; no forced registration.
+
+
+13. Analytics &amp; Success Metrics
+Metric
+Definition
+Primary Use
+Claim start rate
+Welcome sessions tapping Get ₹500 / kiosk sessions
+Offer attractiveness
+Mobile capture rate
+Valid mobile submissions / claim starts
+Identity conversion
+Review CTA rate
+Review opens / valid mobile submissions
+Engagement conversion
+Completion rate
+Eligible completions / review starts
+Journey effectiveness
+Voucher issue rate
+Vouchers issued / claim starts
+Reward funnel
+Voucher redemption rate
+Redeemed vouchers / issued vouchers
+Economic value
+Repeat customer rate
+Returning mobile IDs within campaign window
+Retention
+Cost per acquired contact
+Campaign cost / new contacts
+Unit economics
+
+
+
+
+14. MVP Acceptance Criteria
+
+
+A customer can understand the ₹500 offer and reach mobile entry from the welcome screen in one tap.
+
+
+A customer can skip mobile capture and reach the social/community hub without being blocked.
+
+
+A valid mobile number creates a trackable campaign claim/session.
+
+
+The review CTA opens the configured review destination.
+
+
+The system does not issue the ₹500 voucher before the campaign’s configured completion state.
+
+
+On successful completion, exactly one valid voucher can be issued for that customer/campaign according to rules.
+
+
+The voucher can be displayed and optionally delivered to the customer’s mobile channel.
+
+
+Admin can configure campaign reward amount, dates, links, stores, and terms without code changes.
+
+
+Funnel events are available for reporting by campaign and store.
+
+
+15. Rollout Plan
+Phase
+Scope
+Exit Criteria
+Phase 1 — Prototype
+Clickable kiosk flow with dummy campaign
+UX signed off by marketing + store ops
+Phase 2 — Pilot
+1–3 stores; real mobile capture + review CTA + test vouchers
+Stable funnel, low support issues
+Phase 3 — Controlled Launch
+Selected stores and fixed campaign budget
+Target conversion and redemption economics met
+Phase 4 — Scale
+All stores + admin analytics + POS/CRM integration
+Operational readiness and monitoring established
+
+
+
+
+16. Open Product Decisions
+
+
+Is ₹500 a flat discount, a percentage-equivalent voucher, or a minimum-order voucher?
+
+
+What minimum order value and product exclusions apply?
+
+
+Is the mobile number required only for voucher identity, or will the brand use it for future CRM/marketing with separate consent?
+
+
+Should OTP be mandatory, optional, or omitted in V1?
+
+
+How will review completion be verified operationally?
+
+
+Is the voucher redeemed at POS, through an order system, or both?
+
+
+What is the daily/total campaign budget and fraud threshold?
+
+
+Which social platforms and review destinations should be shown?
+
+
+Should there be a prize/“spin &amp; win” layer, and what prize pool is economically acceptable?
+
+
+17. Product Recommendation
+
+Keep V1 intentionally narrow: Mobile number → Review journey → ₹500 voucher. Make social follows/YouTube subscriptions prominent but optional. Add richer gamification, prizes, CRM personalization, and automated review verification only after the core funnel proves that the reward produces profitable incremental visits/orders.
+
+The core product principle is: make the customer feel rewarded before, during, and after the review action; never make the kiosk feel like a data-collection form.
+

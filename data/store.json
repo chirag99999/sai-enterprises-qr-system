@@ -1,0 +1,323 @@
+{
+  "stores": [
+    {
+      "id": "store-sai-01",
+      "name": "Sai Enterprises - Flagship Tech World (MG Road)",
+      "city": "Bengaluru",
+      "address": "42, Commercial Plaza, MG Road",
+      "code": "SAI-MG-01"
+    },
+    {
+      "id": "store-sai-02",
+      "name": "Sai Enterprises - Gadget Zone (Indiranagar)",
+      "city": "Bengaluru",
+      "address": "100ft Road, Opp. Metro Pillar 48, Indiranagar",
+      "code": "SAI-IND-02"
+    },
+    {
+      "id": "store-sai-03",
+      "name": "Sai Enterprises - Smart Experience (HSR Layout)",
+      "city": "Bengaluru",
+      "address": "27th Main, Sector 1, HSR Layout",
+      "code": "SAI-HSR-03"
+    }
+  ],
+  "campaign": {
+    "id": "camp-sai-500",
+    "name": "Sai Enterprises ₹500 In-Store Gadget Reward",
+    "headline": "Get ₹500 OFF Your Next Gadget",
+    "subheadline": "Complete 2 quick steps and unlock an instant ₹500 voucher on Smartphones, Audio, Smartwatches & Premium Accessories.",
+    "rewardAmount": 500,
+    "minOrderValue": 999,
+    "validDays": 14,
+    "validFrom": "2026-09-01T00:00:00Z",
+    "validTo": "2026-10-31T23:59:59Z",
+    "terms": [
+      "Valid at all Sai Enterprises physical stores across Bangalore.",
+      "Applicable on Smartphones, Smartwatches, Earbuds, Chargers, and Premium Accessories.",
+      "Minimum purchase value of ₹999 required to redeem the ₹500 voucher.",
+      "Limit one ₹500 voucher per mobile number during the campaign window.",
+      "Valid for 14 days from date of generation. Cannot be clubbed with wholesale bulk clearance."
+    ],
+    "reviewUrl": "https://g.page/r/sai-enterprises-gadgets/review",
+    "reviewPlatform": "Google Reviews",
+    "socialLinks": {
+      "instagram": "https://instagram.com/saienterprises_gadgets",
+      "youtube": "https://youtube.com/@saienterprises_unbox",
+      "facebook": "https://facebook.com/saienterprises.official",
+      "website": "https://saienterprises.tech",
+      "menuUrl": "https://saienterprises.tech/gadget-catalogue"
+    },
+    "enabledStores": [
+      "store-sai-01",
+      "store-sai-02",
+      "store-sai-03"
+    ],
+    "otpRequired": false,
+    "dailyCapPerStore": 150,
+    "isActive": true
+  },
+  "customers": [
+    {
+      "id": "cust-9876500001",
+      "phone": "9876500001",
+      "countryCode": "+91",
+      "createdAt": "2026-09-12T00:00:00.000Z",
+      "marketingConsent": true,
+      "claimsCount": 1
+    },
+    {
+      "id": "cust-9876500002",
+      "phone": "9876500002",
+      "countryCode": "+91",
+      "createdAt": "2026-09-13T00:00:00.000Z",
+      "marketingConsent": true,
+      "claimsCount": 1
+    },
+    {
+      "id": "cust-9876500003",
+      "phone": "9876500003",
+      "countryCode": "+91",
+      "createdAt": "2026-09-13T18:00:00.000Z",
+      "marketingConsent": true,
+      "claimsCount": 1
+    },
+    {
+      "id": "cust-9845012345",
+      "phone": "9845012345",
+      "countryCode": "+91",
+      "createdAt": "2026-09-13T23:27:45.725Z",
+      "marketingConsent": true,
+      "claimsCount": 1
+    },
+    {
+      "id": "cust-8855522269",
+      "phone": "8855522269",
+      "countryCode": "+91",
+      "createdAt": "2026-09-13T23:50:01.015Z",
+      "marketingConsent": true,
+      "claimsCount": 1
+    }
+  ],
+  "sessions": [
+    {
+      "sessionId": "sess-sai-1",
+      "storeId": "store-sai-01",
+      "campaignId": "camp-sai-500",
+      "customerId": "cust-9876500001",
+      "phone": "9876500001",
+      "status": "COMPLETED",
+      "startedAt": "2026-09-13T02:00:00.000Z",
+      "completedAt": "2026-09-13T02:02:10.000Z",
+      "voucherId": "vch-sai-1001"
+    },
+    {
+      "sessionId": "sess-1789341943955-u5ms",
+      "storeId": "store-sai-01",
+      "campaignId": "camp-sai-500",
+      "status": "STARTED",
+      "startedAt": "2026-09-13T23:25:43.955Z"
+    },
+    {
+      "sessionId": "sess-1789342023518-cedu",
+      "storeId": "store-sai-01",
+      "campaignId": "camp-sai-500",
+      "status": "REVIEW_OPENED",
+      "startedAt": "2026-09-13T23:27:03.518Z",
+      "customerId": "cust-9845012345",
+      "phone": "9845012345"
+    },
+    {
+      "sessionId": "sess-1789342664156-igob",
+      "storeId": "store-sai-01",
+      "campaignId": "camp-sai-500",
+      "status": "STARTED",
+      "startedAt": "2026-09-13T23:37:44.157Z"
+    },
+    {
+      "sessionId": "sess-1789343395691-zith",
+      "storeId": "store-sai-01",
+      "campaignId": "camp-sai-500",
+      "status": "PHONE_CAPTURED",
+      "startedAt": "2026-09-13T23:49:55.691Z",
+      "customerId": "cust-8855522269",
+      "phone": "8855522269"
+    },
+    {
+      "sessionId": "sess-1789344898679-z8d2",
+      "storeId": "store-sai-01",
+      "campaignId": "camp-sai-500",
+      "status": "STARTED",
+      "startedAt": "2026-09-14T00:14:58.679Z"
+    }
+  ],
+  "vouchers": [
+    {
+      "id": "vch-1789343403376-q0gu",
+      "code": "SAI500-2TXMX2",
+      "campaignId": "camp-sai-500",
+      "customerId": "cust-8855522269",
+      "phone": "8855522269",
+      "storeId": "store-sai-01",
+      "value": 500,
+      "minOrderValue": 999,
+      "status": "ACTIVE",
+      "issuedAt": "2026-09-13T23:50:03.376Z",
+      "expiresAt": "2026-09-27T23:50:03.376Z"
+    },
+    {
+      "id": "vch-1789342121993-293q",
+      "code": "FOOD500-Q7VFWQ",
+      "campaignId": "camp-sai-500",
+      "customerId": "cust-9845012345",
+      "phone": "9845012345",
+      "storeId": "store-sai-01",
+      "value": 500,
+      "minOrderValue": 999,
+      "status": "ACTIVE",
+      "issuedAt": "2026-09-13T23:28:41.993Z",
+      "expiresAt": "2026-09-27T23:28:41.993Z"
+    },
+    {
+      "id": "vch-sai-1001",
+      "code": "SAI500-8X4K2P",
+      "campaignId": "camp-sai-500",
+      "customerId": "cust-9876500001",
+      "phone": "9876500001",
+      "storeId": "store-sai-01",
+      "value": 500,
+      "minOrderValue": 999,
+      "status": "REDEEMED",
+      "issuedAt": "2026-09-13T02:02:10.000Z",
+      "expiresAt": "2026-09-27T02:02:10.000Z",
+      "redeemedAt": "2026-09-13T20:15:00.000Z",
+      "redeemedStoreId": "store-sai-01",
+      "posOrderRef": "BILL-SAI-9921"
+    },
+    {
+      "id": "vch-sai-1002",
+      "code": "SAI500-3L9M7V",
+      "campaignId": "camp-sai-500",
+      "customerId": "cust-9876500002",
+      "phone": "9876500002",
+      "storeId": "store-sai-02",
+      "value": 500,
+      "minOrderValue": 999,
+      "status": "ACTIVE",
+      "issuedAt": "2026-09-13T22:00:00.000Z",
+      "expiresAt": "2026-09-27T22:00:00.000Z"
+    },
+    {
+      "id": "vch-sai-1003",
+      "code": "SAI500-5T2W9Q",
+      "campaignId": "camp-sai-500",
+      "customerId": "cust-9876500003",
+      "phone": "9876500003",
+      "storeId": "store-sai-01",
+      "value": 500,
+      "minOrderValue": 999,
+      "status": "ACTIVE",
+      "issuedAt": "2026-09-14T01:30:00.000Z",
+      "expiresAt": "2026-09-28T01:30:00.000Z"
+    }
+  ],
+  "events": [
+    {
+      "id": "evt-1",
+      "sessionId": "sess-init",
+      "storeId": "store-sai-01",
+      "eventType": "WELCOME_VIEW",
+      "timestamp": "2026-09-13T01:00:00.000Z"
+    },
+    {
+      "id": "evt-1789341943957-9ux2b",
+      "sessionId": "sess-1789341943955-u5ms",
+      "storeId": "store-sai-01",
+      "eventType": "CLAIM_START",
+      "timestamp": "2026-09-13T23:25:43.957Z"
+    },
+    {
+      "id": "evt-1789342023521-pwluj",
+      "sessionId": "sess-1789342023518-cedu",
+      "storeId": "store-sai-01",
+      "eventType": "CLAIM_START",
+      "timestamp": "2026-09-13T23:27:03.521Z"
+    },
+    {
+      "id": "evt-1789342065730-r70nh",
+      "sessionId": "sess-1789342023518-cedu",
+      "storeId": "store-sai-01",
+      "eventType": "PHONE_ENTERED",
+      "timestamp": "2026-09-13T23:27:45.730Z",
+      "metadata": {
+        "phoneMasked": "98******45"
+      }
+    },
+    {
+      "id": "evt-1789342098283-cni7g",
+      "sessionId": "sess-1789342023518-cedu",
+      "storeId": "store-sai-01",
+      "eventType": "REVIEW_CTA_CLICKED",
+      "timestamp": "2026-09-13T23:28:18.283Z"
+    },
+    {
+      "id": "evt-1789342121990-jm6rg",
+      "sessionId": "sess-1789342023518-cedu",
+      "storeId": "store-sai-01",
+      "eventType": "REVIEW_CONFIRMED",
+      "timestamp": "2026-09-13T23:28:41.990Z"
+    },
+    {
+      "id": "evt-1789342664160-pugvl",
+      "sessionId": "sess-1789342664156-igob",
+      "storeId": "store-sai-01",
+      "eventType": "CLAIM_START",
+      "timestamp": "2026-09-13T23:37:44.160Z"
+    },
+    {
+      "id": "evt-1789343395693-z66gi",
+      "sessionId": "sess-1789343395691-zith",
+      "storeId": "store-sai-01",
+      "eventType": "CLAIM_START",
+      "timestamp": "2026-09-13T23:49:55.693Z"
+    },
+    {
+      "id": "evt-1789343401018-liyl3",
+      "sessionId": "sess-1789343395691-zith",
+      "storeId": "store-sai-01",
+      "eventType": "PHONE_ENTERED",
+      "timestamp": "2026-09-13T23:50:01.018Z",
+      "metadata": {
+        "phoneMasked": "88******69"
+      }
+    },
+    {
+      "id": "evt-1789343403374-g2dhf",
+      "sessionId": "sess-1789343395691-zith",
+      "storeId": "store-sai-01",
+      "eventType": "REVIEW_CONFIRMED",
+      "timestamp": "2026-09-13T23:50:03.374Z"
+    },
+    {
+      "id": "evt-1789344898681-t0kl3",
+      "sessionId": "sess-1789344898679-z8d2",
+      "storeId": "store-sai-01",
+      "eventType": "CLAIM_START",
+      "timestamp": "2026-09-14T00:14:58.681Z"
+    },
+    {
+      "id": "evt-1789344908698-itgb6",
+      "sessionId": "sess-1789344898679-z8d2",
+      "storeId": "store-sai-01",
+      "eventType": "SKIP_TO_SOCIAL",
+      "timestamp": "2026-09-14T00:15:08.698Z"
+    },
+    {
+      "id": "evt-1789344912007-5fnb2",
+      "sessionId": "sess-1789344898679-z8d2",
+      "storeId": "store-sai-01",
+      "eventType": "SOCIAL_CLICK",
+      "timestamp": "2026-09-14T00:15:12.008Z"
+    }
+  ]
+}
