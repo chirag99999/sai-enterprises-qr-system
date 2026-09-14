@@ -55,6 +55,7 @@ export const DEFAULT_CAMPAIGN: Campaign = {
   otpRequired: false,
   dailyCapPerStore: 150,
   googleSheetUrl: "https://docs.google.com/spreadsheets/d/1F8t-XiG6khQjM8ql6IjqJUImKUnfCdQc1hVn77OTMSg/edit?usp=sharing",
+  googleSheetWebhookUrl: "https://script.google.com/macros/s/AKfycbxZVNLHtE_8ZfZMGmT6sD4rynlpcwKcIbCek8AZyK4US6697kP0HdAn4O-HMWC8JMXm/exec",
   isActive: true,
 };
 

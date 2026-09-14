@@ -55,6 +55,7 @@
     ],
     "otpRequired": false,
     "dailyCapPerStore": 150,
+    "googleSheetWebhookUrl": "https://script.google.com/macros/s/AKfycbxZVNLHtE_8ZfZMGmT6sD4rynlpcwKcIbCek8AZyK4US6697kP0HdAn4O-HMWC8JMXm/exec",
     "isActive": true
   },
   "customers": [

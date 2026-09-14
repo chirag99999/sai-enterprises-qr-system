@@ -44,8 +44,9 @@ export async function syncLeadToGoogleSheet(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(lead),
+      redirect: "follow",
     });
-    return { success: res.ok };
+    return { success: res.ok || res.status === 302 || res.status === 200 };
   } catch (err: any) {
     console.warn("Could not push lead to Google Sheet webhook:", err.message);
     return { success: false, error: err.message };
