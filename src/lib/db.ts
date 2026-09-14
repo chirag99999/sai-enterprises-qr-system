@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import os from "os";
 import {
   Campaign,
   Store,
@@ -20,146 +21,185 @@ interface DatabaseSchema {
   events: EngagementEvent[];
 }
 
-const DB_DIR = path.join(process.cwd(), "data");
-const DB_FILE = path.join(DB_DIR, "store.json");
+let memoryDb: DatabaseSchema | null = null;
+
+function getDbPaths() {
+  const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+  const dbDir = isServerless ? path.join(os.tmpdir(), "sai_qr_data") : path.join(process.cwd(), "data");
+  const dbFile = path.join(dbDir, "store.json");
+  const bundledFile = path.join(process.cwd(), "data", "store.json");
+  return { dbDir, dbFile, bundledFile };
+}
 
 function ensureDbFile(): DatabaseSchema {
-  if (!fs.existsSync(DB_DIR)) {
-    fs.mkdirSync(DB_DIR, { recursive: true });
+  if (memoryDb) {
+    return memoryDb;
   }
 
-  if (!fs.existsSync(DB_FILE)) {
-    const initialData: DatabaseSchema = {
-      stores: DEFAULT_STORES,
-      campaign: DEFAULT_CAMPAIGN,
-      customers: [
-        {
-          id: "cust-9876500001",
-          phone: "9876500001",
-          countryCode: "+91",
-          createdAt: new Date(Date.now() - 3600000 * 48).toISOString(),
-          marketingConsent: true,
-          claimsCount: 1,
-        },
-        {
-          id: "cust-9876500002",
-          phone: "9876500002",
-          countryCode: "+91",
-          createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-          marketingConsent: true,
-          claimsCount: 1,
-        },
-        {
-          id: "cust-9876500003",
-          phone: "9876500003",
-          countryCode: "+91",
-          createdAt: new Date(Date.now() - 3600000 * 6).toISOString(),
-          marketingConsent: true,
-          claimsCount: 1,
-        },
-      ],
-      sessions: [
-        {
-          sessionId: "sess-init-1",
-          storeId: "store-101",
-          campaignId: DEFAULT_CAMPAIGN.id,
-          customerId: "cust-9876500001",
-          phone: "9876500001",
-          status: "COMPLETED",
-          startedAt: new Date(Date.now() - 3600000 * 26).toISOString(),
-          completedAt: new Date(Date.now() - 3600000 * 26 + 120000).toISOString(),
-          voucherId: "vch-1001",
-        },
-        {
-          sessionId: "sess-init-2",
-          storeId: "store-102",
-          campaignId: DEFAULT_CAMPAIGN.id,
-          customerId: "cust-9876500002",
-          phone: "9876500002",
-          status: "COMPLETED",
-          startedAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-          completedAt: new Date(Date.now() - 3600000 * 5 + 95000).toISOString(),
-          voucherId: "vch-1002",
-        },
-      ],
-      vouchers: INITIAL_VOUCHERS,
-      events: [
-        {
-          id: "evt-1",
-          sessionId: "sess-mock-1",
-          storeId: "store-101",
-          eventType: "WELCOME_VIEW",
-          timestamp: new Date(Date.now() - 3600000 * 50).toISOString(),
-        },
-        {
-          id: "evt-2",
-          sessionId: "sess-mock-1",
-          storeId: "store-101",
-          eventType: "CLAIM_START",
-          timestamp: new Date(Date.now() - 3600000 * 50 + 5000).toISOString(),
-        },
-        {
-          id: "evt-3",
-          sessionId: "sess-mock-1",
-          storeId: "store-101",
-          eventType: "PHONE_ENTERED",
-          timestamp: new Date(Date.now() - 3600000 * 50 + 25000).toISOString(),
-        },
-        {
-          id: "evt-4",
-          sessionId: "sess-mock-1",
-          storeId: "store-101",
-          eventType: "REVIEW_CTA_CLICKED",
-          timestamp: new Date(Date.now() - 3600000 * 50 + 40000).toISOString(),
-        },
-        {
-          id: "evt-5",
-          sessionId: "sess-mock-1",
-          storeId: "store-101",
-          eventType: "REVIEW_CONFIRMED",
-          timestamp: new Date(Date.now() - 3600000 * 50 + 90000).toISOString(),
-        },
-        {
-          id: "evt-6",
-          sessionId: "sess-mock-1",
-          storeId: "store-101",
-          eventType: "VOUCHER_ISSUED",
-          timestamp: new Date(Date.now() - 3600000 * 50 + 95000).toISOString(),
-        },
-        {
-          id: "evt-7",
-          sessionId: "sess-mock-1",
-          storeId: "store-101",
-          eventType: "VOUCHER_REDEEMED",
-          timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
-        },
-      ],
-    };
-    fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), "utf8");
-    return initialData;
+  const { dbDir, dbFile, bundledFile } = getDbPaths();
+
+  // Try reading from dbFile
+  if (fs.existsSync(dbFile)) {
+    try {
+      const raw = fs.readFileSync(dbFile, "utf8");
+      memoryDb = JSON.parse(raw) as DatabaseSchema;
+      return memoryDb;
+    } catch {
+      // ignore
+    }
   }
+
+  // Try reading from bundledFile (in the project's data directory)
+  if (bundledFile !== dbFile && fs.existsSync(bundledFile)) {
+    try {
+      const raw = fs.readFileSync(bundledFile, "utf8");
+      memoryDb = JSON.parse(raw) as DatabaseSchema;
+      try {
+        if (!fs.existsSync(dbDir)) {
+          fs.mkdirSync(dbDir, { recursive: true });
+        }
+        fs.writeFileSync(dbFile, raw, "utf8");
+      } catch {
+        // ignore write error on read-only environments
+      }
+      return memoryDb;
+    } catch {
+      // ignore
+    }
+  }
+
+  const initialData: DatabaseSchema = {
+    stores: DEFAULT_STORES,
+    campaign: DEFAULT_CAMPAIGN,
+    customers: [
+      {
+        id: "cust-9876500001",
+        phone: "9876500001",
+        countryCode: "+91",
+        createdAt: new Date(Date.now() - 3600000 * 48).toISOString(),
+        marketingConsent: true,
+        claimsCount: 1,
+      },
+      {
+        id: "cust-9876500002",
+        phone: "9876500002",
+        countryCode: "+91",
+        createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
+        marketingConsent: true,
+        claimsCount: 1,
+      },
+      {
+        id: "cust-9876500003",
+        phone: "9876500003",
+        countryCode: "+91",
+        createdAt: new Date(Date.now() - 3600000 * 6).toISOString(),
+        marketingConsent: true,
+        claimsCount: 1,
+      },
+    ],
+    sessions: [
+      {
+        sessionId: "sess-init-1",
+        storeId: "store-sai-01",
+        campaignId: DEFAULT_CAMPAIGN.id,
+        customerId: "cust-9876500001",
+        phone: "9876500001",
+        status: "COMPLETED",
+        startedAt: new Date(Date.now() - 3600000 * 26).toISOString(),
+        completedAt: new Date(Date.now() - 3600000 * 26 + 120000).toISOString(),
+        voucherId: "vch-sai-1001",
+      },
+      {
+        sessionId: "sess-init-2",
+        storeId: "store-sai-02",
+        campaignId: DEFAULT_CAMPAIGN.id,
+        customerId: "cust-9876500002",
+        phone: "9876500002",
+        status: "COMPLETED",
+        startedAt: new Date(Date.now() - 3600000 * 5).toISOString(),
+        completedAt: new Date(Date.now() - 3600000 * 5 + 95000).toISOString(),
+        voucherId: "vch-sai-1002",
+      },
+    ],
+    vouchers: INITIAL_VOUCHERS,
+    events: [
+      {
+        id: "evt-1",
+        sessionId: "sess-mock-1",
+        storeId: "store-sai-01",
+        eventType: "WELCOME_VIEW",
+        timestamp: new Date(Date.now() - 3600000 * 50).toISOString(),
+      },
+      {
+        id: "evt-2",
+        sessionId: "sess-mock-1",
+        storeId: "store-sai-01",
+        eventType: "CLAIM_START",
+        timestamp: new Date(Date.now() - 3600000 * 50 + 5000).toISOString(),
+      },
+      {
+        id: "evt-3",
+        sessionId: "sess-mock-1",
+        storeId: "store-sai-01",
+        eventType: "PHONE_ENTERED",
+        timestamp: new Date(Date.now() - 3600000 * 50 + 25000).toISOString(),
+      },
+      {
+        id: "evt-4",
+        sessionId: "sess-mock-1",
+        storeId: "store-sai-01",
+        eventType: "REVIEW_CTA_CLICKED",
+        timestamp: new Date(Date.now() - 3600000 * 50 + 40000).toISOString(),
+      },
+      {
+        id: "evt-5",
+        sessionId: "sess-mock-1",
+        storeId: "store-sai-01",
+        eventType: "REVIEW_CONFIRMED",
+        timestamp: new Date(Date.now() - 3600000 * 50 + 90000).toISOString(),
+      },
+      {
+        id: "evt-6",
+        sessionId: "sess-mock-1",
+        storeId: "store-sai-01",
+        eventType: "VOUCHER_ISSUED",
+        timestamp: new Date(Date.now() - 3600000 * 50 + 95000).toISOString(),
+      },
+      {
+        id: "evt-7",
+        sessionId: "sess-mock-1",
+        storeId: "store-sai-01",
+        eventType: "VOUCHER_REDEEMED",
+        timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
+      },
+    ],
+  };
+
+  memoryDb = initialData;
 
   try {
-    const raw = fs.readFileSync(DB_FILE, "utf8");
-    return JSON.parse(raw) as DatabaseSchema;
+    if (!fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true });
+    }
+    fs.writeFileSync(dbFile, JSON.stringify(initialData, null, 2), "utf8");
   } catch (err) {
-    console.error("Error reading db file, falling back:", err);
-    return {
-      stores: DEFAULT_STORES,
-      campaign: DEFAULT_CAMPAIGN,
-      customers: [],
-      sessions: [],
-      vouchers: INITIAL_VOUCHERS,
-      events: [],
-    };
+    console.warn("Could not write initial db file, operating in memory:", err);
   }
+
+  return initialData;
 }
 
 function writeDb(data: DatabaseSchema) {
-  if (!fs.existsSync(DB_DIR)) {
-    fs.mkdirSync(DB_DIR, { recursive: true });
+  memoryDb = data;
+  const { dbDir, dbFile } = getDbPaths();
+  try {
+    if (!fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true });
+    }
+    fs.writeFileSync(dbFile, JSON.stringify(data, null, 2), "utf8");
+  } catch (err) {
+    console.warn("Filesystem write skipped (operating in memory):", err);
   }
-  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), "utf8");
 }
 
 export function getStores(): Store[] {
