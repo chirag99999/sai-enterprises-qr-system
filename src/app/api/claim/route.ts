@@ -63,6 +63,26 @@ export async function POST(req: Request) {
         });
       }
 
+      // Sync lead immediately to Google Sheet
+      try {
+        const { syncLeadToGoogleSheet } = await import("@/lib/google-sheets");
+        const { getStores } = await import("@/lib/db");
+        const store = getStores().find((s) => s.id === storeId);
+        await syncLeadToGoogleSheet({
+          timestamp: new Date().toISOString(),
+          phone: cleanPhone,
+          storeName: store ? store.name : "Sai Enterprises",
+          storeCode: store ? store.code : "SAI-MG-01",
+          voucherCode: existingVoucher ? existingVoucher.code : "CLAIMING_IN_PROGRESS",
+          voucherValue: campaign.rewardAmount || 500,
+          status: existingVoucher ? existingVoucher.status : "PHONE_ENTERED",
+          marketingConsent: marketingConsent !== false ? "YES" : "NO",
+          source: "In-Store QR Kiosk",
+        });
+      } catch (sheetErr) {
+        console.warn("Immediate lead sheet sync notice:", sheetErr);
+      }
+
       return NextResponse.json({
         success: true,
         customer: {
