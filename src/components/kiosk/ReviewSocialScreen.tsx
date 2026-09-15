@@ -38,11 +38,12 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
 }) => {
   const [hasVisitedInstagram, setHasVisitedInstagram] = useState<boolean>(false);
   const [hasVisitedWhatsApp, setHasVisitedWhatsApp] = useState<boolean>(false);
+  const [hasVisitedFacebook, setHasVisitedFacebook] = useState<boolean>(false);
   const [hasOpenedReview, setHasOpenedReview] = useState<boolean>(false);
 
   // QR Modal for kiosk tablets
   const [qrModalPlatform, setQrModalPlatform] = useState<
-    "Instagram" | "WhatsApp" | "Google" | null
+    "Instagram" | "WhatsApp" | "Facebook" | "Google" | null
   >(null);
 
   const instagramUrl =
@@ -50,6 +51,10 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
   const whatsappUrl =
     campaign.socialLinks.whatsapp ||
     "https://whatsapp.com/channel/0029VbDIQjDI7BeF7j3TDx45";
+  const facebookUrl =
+    campaign.socialLinks.facebookPage ||
+    campaign.socialLinks.facebook ||
+    "https://www.facebook.com/share/1J1GDYGkxs/?mibextid=wwXIfr";
   const reviewUrl =
     campaign.reviewUrl ||
     "https://www.google.com/search?q=SAI+KESHAV+ENTERPRISES-Mobiles&kgmid=/g/11j9m4wt35";
@@ -64,6 +69,12 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
     setHasVisitedWhatsApp(true);
     onSocialClick("WhatsApp");
     window.open(whatsappUrl, "_blank");
+  };
+
+  const handleOpenFacebook = () => {
+    setHasVisitedFacebook(true);
+    onSocialClick("Facebook");
+    window.open(facebookUrl, "_blank");
   };
 
   const handleOpenReview = () => {
@@ -82,8 +93,12 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
         elevated
         className="w-full p-4 sm:p-7 flex flex-col items-center relative overflow-hidden"
       >
+        {/* Ambient breathing background glows for alive kiosk feel */}
+        <div className="absolute -top-20 -right-20 w-56 h-56 rounded-full bg-amber-400/20 blur-3xl pointer-events-none animate-pulse-glow" />
+        <div className="absolute -bottom-20 -left-20 w-56 h-56 rounded-full bg-emerald-400/15 blur-3xl pointer-events-none animate-pulse-glow" />
+
         {/* Navigation & Step */}
-        <div className="w-full flex items-center justify-between mb-3">
+        <div className="w-full flex items-center justify-between mb-3 z-10">
           <button
             onClick={onBack}
             className="flex items-center gap-1 text-xs font-bold text-neutral-600 hover:text-brand-dark px-3 py-1.5 rounded-full bg-white/80 border border-neutral-200 hover:bg-white transition active:scale-95 shadow-2xs"
@@ -96,8 +111,8 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
           </div>
         </div>
 
-        {/* Reserved Voucher Banner */}
-        <div className="w-full p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-400/15 to-amber-500/10 border border-amber-300/80 flex items-center gap-3 mb-4 shadow-2xs">
+        {/* Reserved Voucher Banner with Subtle Breathing Pulse */}
+        <div className="w-full p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-400/15 to-amber-500/10 border border-amber-300/80 flex items-center gap-3 mb-4 shadow-2xs animate-subtle-pulse relative z-10">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center shrink-0 shadow-sm font-black text-lg">
             ₹
           </div>
@@ -116,11 +131,22 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
           </div>
         </div>
 
-        {/* Mandatory Requirement Header & Progress */}
-        <div className="w-full mb-3">
+        {/* Mandatory Requirement Header & Progress with Live Pulse */}
+        <div className="w-full mb-3 z-10">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-extrabold text-neutral-800 uppercase tracking-wider flex items-center gap-1">
-              <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
+            <span className="text-xs font-extrabold text-neutral-800 uppercase tracking-wider flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span
+                  className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                    isMandatoryCompleted ? "bg-emerald-400" : "bg-amber-400"
+                  }`}
+                />
+                <span
+                  className={`relative inline-flex rounded-full h-2 w-2 ${
+                    isMandatoryCompleted ? "bg-emerald-500" : "bg-amber-500"
+                  }`}
+                />
+              </span>
               <span>Mandatory Actions ({completedCount}/2 Completed)</span>
             </span>
             <span
@@ -275,43 +301,114 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
           </div>
         </div>
 
-        {/* BONUS: GOOGLE REVIEW (Optional) */}
-        <div className="w-full p-3 rounded-xl bg-neutral-50 border border-neutral-200/80 mb-4 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
-              <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-neutral-800">
-                  Rate New SaiKeshav on Google
-                </span>
-                <span className="text-[9px] font-bold text-neutral-500 bg-neutral-200/60 px-1.5 py-0.2 rounded">
-                  Optional Bonus
-                </span>
+        {/* BONUS: OPTIONAL CHANNELS (Facebook & Google Review) */}
+        <div className="w-full space-y-2 mb-4 z-10">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[10.5px] font-black uppercase tracking-wider text-neutral-400">
+              Optional Bonus Channels
+            </span>
+            <span className="text-[10px] text-neutral-400 font-semibold">
+              Not required to claim ₹{campaign.rewardAmount}
+            </span>
+          </div>
+
+          {/* 1. FACEBOOK OPTIONAL BONUS */}
+          <div className="w-full p-3 rounded-xl bg-neutral-50/90 hover:bg-blue-50/30 border border-neutral-200/80 hover:border-blue-300 transition-all flex items-center justify-between gap-2 shadow-2xs">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-[#1877F2] text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </svg>
               </div>
-              <p className="text-[10px] text-neutral-500 truncate">
-                Leave a 5★ review to help our local store grow
-              </p>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-xs font-bold text-neutral-800">
+                    Follow New SaiKeshav on Facebook
+                  </span>
+                  <span className="text-[9px] font-extrabold text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded">
+                    Optional Bonus
+                  </span>
+                </div>
+                <p className="text-[10.5px] text-neutral-500 truncate">
+                  Deals, new mobile launches &amp; local updates
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                onClick={handleOpenFacebook}
+                className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center gap-1 transition active:scale-95 ${
+                  hasVisitedFacebook
+                    ? "bg-blue-50 border-blue-300 text-blue-700 font-black"
+                    : "bg-white border-neutral-300 hover:bg-neutral-100 text-neutral-700"
+                }`}
+              >
+                <span>{hasVisitedFacebook ? "Followed ✓" : "Visit Page"}</span>
+                <ExternalLink className="w-3 h-3" />
+              </button>
+              <button
+                onClick={() => setQrModalPlatform("Facebook")}
+                className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition"
+                title="Scan QR"
+              >
+                <QrCode className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
-          <button
-            onClick={handleOpenReview}
-            className="px-2.5 py-1.5 rounded-lg bg-white border border-neutral-300 hover:bg-neutral-100 text-[11px] font-bold text-neutral-700 flex items-center gap-1 shrink-0"
-          >
-            <span>{hasOpenedReview ? "Reviewed ✓" : "Review"}</span>
-            <ExternalLink className="w-3 h-3" />
-          </button>
+
+          {/* 2. GOOGLE REVIEW OPTIONAL BONUS */}
+          <div className="w-full p-3 rounded-xl bg-neutral-50/90 hover:bg-amber-50/30 border border-neutral-200/80 hover:border-amber-300 transition-all flex items-center justify-between gap-2 shadow-2xs">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
+                <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-xs font-bold text-neutral-800">
+                    Rate New SaiKeshav on Google
+                  </span>
+                  <span className="text-[9px] font-extrabold text-amber-800 bg-amber-100 px-1.5 py-0.2 rounded">
+                    Optional Bonus
+                  </span>
+                </div>
+                <p className="text-[10.5px] text-neutral-500 truncate">
+                  Leave a 5★ review to help our Baripada store grow
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                onClick={handleOpenReview}
+                className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center gap-1 transition active:scale-95 ${
+                  hasOpenedReview
+                    ? "bg-amber-50 border-amber-300 text-amber-800 font-black"
+                    : "bg-white border-neutral-300 hover:bg-neutral-100 text-neutral-700"
+                }`}
+              >
+                <span>{hasOpenedReview ? "Reviewed ✓" : "Review"}</span>
+                <ExternalLink className="w-3 h-3" />
+              </button>
+              <button
+                onClick={() => setQrModalPlatform("Google")}
+                className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition"
+                title="Scan QR"
+              >
+                <QrCode className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* PRIMARY UNLOCK BUTTON */}
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md z-10">
           <button
             onClick={onConfirmCompleted}
             disabled={!isMandatoryCompleted || loading}
             className={`w-full py-4 px-6 rounded-2xl font-black text-sm sm:text-base tracking-wide flex items-center justify-center gap-2 shadow-xl transition-all transform active:scale-[0.98] ${
               isMandatoryCompleted
-                ? "bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-600 hover:to-amber-800 text-white shadow-amber-600/30 cursor-pointer animate-pulse"
+                ? "bg-gradient-to-r from-[#C28E3A] via-[#DE9F35] to-[#996515] hover:brightness-105 text-white shadow-amber-600/30 cursor-pointer shine-effect animate-subtle-pulse"
                 : "bg-neutral-200 text-neutral-500 cursor-not-allowed border border-neutral-300"
             }`}
           >
@@ -343,7 +440,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
               </span>
             ) : (
               <span>
-                * Redirecting to both Instagram &amp; WhatsApp community is required to activate your ₹{campaign.rewardAmount} voucher.
+                * Redirecting to both Instagram &amp; WhatsApp VIP community is required to activate your ₹{campaign.rewardAmount} voucher.
               </span>
             )}
           </p>
@@ -360,6 +457,8 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
                   ? "bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600"
                   : qrModalPlatform === "WhatsApp"
                   ? "bg-emerald-600"
+                  : qrModalPlatform === "Facebook"
+                  ? "bg-[#1877F2]"
                   : "bg-amber-500"
               }`}
             >
@@ -380,6 +479,8 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
                     ? instagramUrl
                     : qrModalPlatform === "WhatsApp"
                     ? whatsappUrl
+                    : qrModalPlatform === "Facebook"
+                    ? facebookUrl
                     : reviewUrl
                 }
                 size={160}
@@ -392,6 +493,8 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
               onClick={() => {
                 if (qrModalPlatform === "Instagram") setHasVisitedInstagram(true);
                 if (qrModalPlatform === "WhatsApp") setHasVisitedWhatsApp(true);
+                if (qrModalPlatform === "Facebook") setHasVisitedFacebook(true);
+                if (qrModalPlatform === "Google") setHasOpenedReview(true);
                 setQrModalPlatform(null);
               }}
               className="w-full py-3 rounded-xl bg-neutral-900 text-white font-extrabold text-xs tracking-wide hover:bg-black transition active:scale-95"

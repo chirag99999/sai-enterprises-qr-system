@@ -80,8 +80,8 @@ export const RewardUnlockScreen: React.FC<RewardUnlockScreenProps> = ({
         className="w-full p-4 sm:p-8 flex flex-col items-center text-center relative overflow-hidden"
       >
         {/* Soft background ambient gradient */}
-        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-brand-yellow/30 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-brand-blue/20 blur-3xl pointer-events-none" />
+        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-brand-yellow/30 blur-3xl pointer-events-none animate-pulse-glow" />
+        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-brand-blue/20 blur-3xl pointer-events-none animate-pulse-glow" />
 
         {/* Celebration Tag */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-extrabold text-[10px] sm:text-xs uppercase tracking-wider mb-2 sm:mb-3">
@@ -98,8 +98,8 @@ export const RewardUnlockScreen: React.FC<RewardUnlockScreenProps> = ({
           Present this barcode or code at the New SaiKeshav Enterprises billing desk, Roxy Road, Baripada.
         </p>
 
-        {/* Voucher Ticket Component */}
-        <div className="w-full max-w-sm sm:max-w-md bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border-2 border-dashed border-neutral-300 shadow-lg relative mb-3 sm:mb-4">
+        {/* Voucher Ticket Component with Living Subtle Pulse */}
+        <div className="w-full max-w-sm sm:max-w-md bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border-2 border-dashed border-neutral-300 shadow-lg relative mb-3 sm:mb-4 animate-subtle-pulse">
           {/* Top Notch Accents */}
           <div className="absolute -left-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-brand-surface border-r border-neutral-300" />
           <div className="absolute -right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-brand-surface border-l border-neutral-300" />
@@ -206,10 +206,10 @@ export const RewardUnlockScreen: React.FC<RewardUnlockScreenProps> = ({
         </div>
 
         {/* Finish CTA */}
-        <div className="w-full max-w-sm sm:max-w-md space-y-1.5">
+        <div className="w-full max-w-sm sm:max-w-md space-y-1.5 z-10">
           <button
             onClick={onFinish}
-            className="w-full py-3 sm:py-3.5 rounded-2xl bg-brand-dark hover:bg-black text-white font-extrabold text-sm sm:text-base tracking-wide shadow-md transition active:scale-[0.98] flex items-center justify-center gap-2"
+            className="w-full py-3 sm:py-3.5 rounded-2xl bg-brand-dark hover:bg-black text-white font-extrabold text-sm sm:text-base tracking-wide shadow-md transition active:scale-[0.98] flex items-center justify-center gap-2 shine-effect cursor-pointer"
           >
             <span>Done — Ready to Purchase</span>
             <ArrowRight className="w-4 h-4" />

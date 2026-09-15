@@ -205,12 +205,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           </div>
         </div>
 
-        {/* Right Gadgets Pedestal Column (5 cols) */}
+        {/* Right Gadgets Pedestal Column (5 cols) with Living Floating Loop */}
         <div className="col-span-5 relative flex items-center justify-end">
+          <div className="absolute inset-0 m-auto w-28 sm:w-36 h-28 sm:h-36 rounded-full bg-amber-300/35 blur-2xl animate-pulse-glow pointer-events-none" />
           <img
             src="/gadgets_showcase_perfect.png"
             alt="Gold iPhone, White AirPods and Gold Smartwatch on Luxury Pedestal"
-            className="w-full max-h-[230px] sm:max-h-[270px] object-contain drop-shadow-xs select-none pointer-events-none scale-105 sm:scale-100"
+            className="w-full max-h-[230px] sm:max-h-[270px] object-contain drop-shadow-md select-none pointer-events-none scale-105 sm:scale-100 animate-float-gentle"
           />
         </div>
       </div>
@@ -218,41 +219,41 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       {/* 4 CATEGORY CARDS (Unified rounded card container) */}
       <div className="w-full bg-white/95 rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-xs border border-neutral-200/60 grid grid-cols-4 gap-1.5 sm:gap-2 mt-3 sm:mt-4 z-10">
         {/* Smartphones */}
-        <div className="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 transition cursor-pointer">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] flex items-center justify-center text-neutral-800 shadow-2xs">
-            <Smartphone className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8]" />
+        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] group-hover:bg-amber-50/70 group-hover:shadow-md group-hover:scale-105 transition-all duration-300 flex items-center justify-center text-neutral-800 shadow-2xs">
+            <Smartphone className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8] group-hover:text-amber-700 transition-colors" />
           </div>
-          <span className="text-[10px] sm:text-xs font-bold text-neutral-800 text-center mt-1.5">
+          <span className="text-[10px] sm:text-xs font-bold text-neutral-800 text-center mt-1.5 group-hover:text-amber-900 transition-colors">
             Smartphones
           </span>
         </div>
 
         {/* Audio */}
-        <div className="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 transition cursor-pointer">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] flex items-center justify-center text-neutral-800 shadow-2xs">
-            <DualEarbudsIcon className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-800" />
+        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] group-hover:bg-amber-50/70 group-hover:shadow-md group-hover:scale-105 transition-all duration-300 flex items-center justify-center text-neutral-800 shadow-2xs">
+            <DualEarbudsIcon className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-800 group-hover:text-amber-700 transition-colors" />
           </div>
-          <span className="text-[10px] sm:text-xs font-bold text-neutral-800 text-center mt-1.5">
+          <span className="text-[10px] sm:text-xs font-bold text-neutral-800 text-center mt-1.5 group-hover:text-amber-900 transition-colors">
             Audio
           </span>
         </div>
 
         {/* Smartwatches */}
-        <div className="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 transition cursor-pointer">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] flex items-center justify-center text-neutral-800 shadow-2xs">
-            <Watch className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8]" />
+        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] group-hover:bg-amber-50/70 group-hover:shadow-md group-hover:scale-105 transition-all duration-300 flex items-center justify-center text-neutral-800 shadow-2xs">
+            <Watch className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8] group-hover:text-amber-700 transition-colors" />
           </div>
-          <span className="text-[10px] sm:text-xs font-bold text-neutral-800 text-center mt-1.5">
+          <span className="text-[10px] sm:text-xs font-bold text-neutral-800 text-center mt-1.5 group-hover:text-amber-900 transition-colors">
             Smartwatches
           </span>
         </div>
 
         {/* Accessories */}
-        <div className="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 transition cursor-pointer">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] flex items-center justify-center text-neutral-800 shadow-2xs">
-            <Headphones className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8]" />
+        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] group-hover:bg-amber-50/70 group-hover:shadow-md group-hover:scale-105 transition-all duration-300 flex items-center justify-center text-neutral-800 shadow-2xs">
+            <Headphones className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8] group-hover:text-amber-700 transition-colors" />
           </div>
-          <span className="text-[10px] sm:text-xs font-bold text-neutral-800 text-center mt-1.5">
+          <span className="text-[10px] sm:text-xs font-bold text-neutral-800 text-center mt-1.5 group-hover:text-amber-900 transition-colors">
             Accessories
           </span>
         </div>
@@ -296,7 +297,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       <div className="w-full mt-3 sm:mt-4 z-10">
         <button
           onClick={onStartClaim}
-          className="w-full py-3.5 sm:py-4 px-6 rounded-full bg-gradient-to-r from-[#C28E3A] via-[#B88230] to-[#996515] hover:brightness-105 active:scale-[0.98] text-white font-extrabold text-base sm:text-lg shadow-lg shadow-amber-950/20 flex items-center justify-center relative transition-all group"
+          className="w-full py-3.5 sm:py-4 px-6 rounded-full bg-gradient-to-r from-[#C28E3A] via-[#B88230] to-[#996515] hover:brightness-105 active:scale-[0.98] text-white font-extrabold text-base sm:text-lg shadow-lg shadow-amber-950/20 flex items-center justify-center relative transition-all group shine-effect animate-subtle-pulse"
         >
           <span>Claim My ₹{campaign.rewardAmount}</span>
           <ArrowRight className="w-5 h-5 absolute right-6 text-white stroke-[2.5] group-hover:translate-x-1 transition-transform" />
