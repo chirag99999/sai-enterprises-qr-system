@@ -25,6 +25,8 @@ export interface Campaign {
     facebook: string;
     website: string;
     menuUrl: string;
+    whatsapp?: string;
+    facebookPage?: string;
   };
   enabledStores: string[];
   otpRequired: boolean;
