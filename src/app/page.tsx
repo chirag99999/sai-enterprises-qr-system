@@ -239,19 +239,24 @@ export default function KioskPage() {
 
   return (
     <main className="min-h-screen flex flex-col justify-between overflow-x-hidden relative">
-      {/* Top Header Shell */}
-      <KioskHeader
-        currentStore={currentStore}
-        stores={stores}
-        onSelectStore={(s) => setCurrentStore(s)}
-        onReset={resetKiosk}
-      />
+      {/* Top Header Shell (shown on sub-screens) */}
+      {currentStep !== "WELCOME" && (
+        <KioskHeader
+          currentStore={currentStore}
+          stores={stores}
+          onSelectStore={(s) => setCurrentStore(s)}
+          onReset={resetKiosk}
+        />
+      )}
 
       {/* Dynamic Screen View */}
       <div className="flex-1 flex flex-col items-center justify-center p-2 sm:p-4">
         {currentStep === "WELCOME" && (
           <WelcomeScreen
             campaign={campaign}
+            currentStore={currentStore}
+            stores={stores}
+            onSelectStore={(s) => setCurrentStore(s)}
             onStartClaim={handleStartClaim}
             onSkip={handleSkipToSocial}
           />
@@ -296,10 +301,12 @@ export default function KioskPage() {
         )}
       </div>
 
-      {/* Subtle Bottom Footer */}
-      <footer className="w-full py-3 text-center text-[11px] text-neutral-400 font-medium z-10">
-        <span>Powered by Sai Enterprises In-Store Experience Engine • Touch Screen Optimized</span>
-      </footer>
+      {/* Subtle Bottom Footer (on sub-screens) */}
+      {currentStep !== "WELCOME" && (
+        <footer className="w-full py-3 text-center text-[11px] text-neutral-400 font-medium z-10">
+          <span>Powered by Sai Enterprises In-Store Experience Engine • Touch Screen Optimized</span>
+        </footer>
+      )}
     </main>
   );
 }

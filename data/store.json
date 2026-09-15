@@ -100,6 +100,14 @@
       "createdAt": "2026-09-13T23:50:01.015Z",
       "marketingConsent": true,
       "claimsCount": 1
+    },
+    {
+      "id": "cust-7777777777",
+      "phone": "7777777777",
+      "countryCode": "+91",
+      "createdAt": "2026-09-15T07:36:17.526Z",
+      "marketingConsent": true,
+      "claimsCount": 0
     }
   ],
   "sessions": [
@@ -152,6 +160,15 @@
       "campaignId": "camp-sai-500",
       "status": "STARTED",
       "startedAt": "2026-09-14T00:14:58.679Z"
+    },
+    {
+      "sessionId": "sess-1789457771338-fty3",
+      "storeId": "store-sai-01",
+      "campaignId": "camp-sai-500",
+      "customerId": "cust-7777777777",
+      "phone": "7777777777",
+      "status": "PHONE_CAPTURED",
+      "startedAt": "2026-09-15T07:36:11.338Z"
     }
   ],
   "vouchers": [
@@ -321,6 +338,23 @@
       "storeId": "store-sai-01",
       "eventType": "SOCIAL_CLICK",
       "timestamp": "2026-09-14T00:15:12.008Z"
+    },
+    {
+      "id": "evt-1789457771339-xhrgs",
+      "sessionId": "sess-1789457771338-fty3",
+      "storeId": "store-sai-01",
+      "eventType": "CLAIM_START",
+      "timestamp": "2026-09-15T07:36:11.339Z"
+    },
+    {
+      "id": "evt-1789457777527-fbk0m",
+      "sessionId": "sess-1789457771338-fty3",
+      "storeId": "store-sai-01",
+      "eventType": "PHONE_ENTERED",
+      "timestamp": "2026-09-15T07:36:17.527Z",
+      "metadata": {
+        "phoneMasked": "77******77"
+      }
     }
   ]
 }
