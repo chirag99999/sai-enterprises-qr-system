@@ -212,6 +212,79 @@ body {
   animation: shimmer 3s infinite;
 }
 
+/* Page Transition Glide */
+@keyframes pageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-page-in {
+  animation: pageSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Micro-interaction & Tactile Tap Effects */
+.tap-feedback {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background-color 0.15s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.tap-feedback:hover {
+  transform: translateY(-1.5px);
+}
+.tap-feedback:active {
+  transform: scale(0.96) translateY(1px);
+}
+
+.card-interactive {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.2s ease;
+}
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -6px rgba(4, 5, 5, 0.08);
+}
+.card-interactive:active {
+  transform: scale(0.985);
+}
+
+/* Keypad Haptic Pop Animation */
+@keyframes keypadPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.92);
+    background-color: rgba(222, 159, 53, 0.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-keypad-tap:active {
+  animation: keypadPop 0.18s ease-out forwards;
+}
+
+/* Breathing Focus Ring for inputs */
+@keyframes focusRingBreathe {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(184, 130, 48, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(184, 130, 48, 0.45);
+  }
+}
+
+.animate-focus-breathe {
+  animation: focusRingBreathe 2s ease-in-out infinite;
+}
+
 /* Hide scrollbars for kiosk mode */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

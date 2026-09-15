@@ -176,7 +176,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
         <div className="w-full space-y-2.5 sm:space-y-3 mb-4 z-10">
           {/* 1. INSTAGRAM MANDATORY REDIRECT */}
           <div
-            className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all ${
+            className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all card-interactive ${
               hasVisitedInstagram
                 ? "bg-emerald-50/70 border-emerald-400/80 shadow-xs"
                 : "bg-white border-neutral-200/90 shadow-sm hover:border-pink-300"
@@ -208,7 +208,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   onClick={handleOpenInstagram}
-                  className={`px-3 sm:px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-xs ${
+                  className={`px-3 sm:px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-xs tap-feedback ${
                     hasVisitedInstagram
                       ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                       : "bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white"
@@ -228,7 +228,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
                 </button>
                 <button
                   onClick={() => setQrModalPlatform("Instagram")}
-                  className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition"
+                  className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition tap-feedback"
                   title="Scan QR"
                 >
                   <QrCode className="w-4 h-4" />
@@ -239,7 +239,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
 
           {/* 2. WHATSAPP COMMUNITY MANDATORY REDIRECT */}
           <div
-            className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all ${
+            className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all card-interactive ${
               hasVisitedWhatsApp
                 ? "bg-emerald-50/70 border-emerald-400/80 shadow-xs"
                 : "bg-white border-neutral-200/90 shadow-sm hover:border-emerald-300"
@@ -271,7 +271,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   onClick={handleOpenWhatsApp}
-                  className={`px-3 sm:px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-xs ${
+                  className={`px-3 sm:px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-xs tap-feedback ${
                     hasVisitedWhatsApp
                       ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                       : "bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -291,7 +291,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
                 </button>
                 <button
                   onClick={() => setQrModalPlatform("WhatsApp")}
-                  className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition"
+                  className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition tap-feedback"
                   title="Scan QR"
                 >
                   <QrCode className="w-4 h-4" />
@@ -302,7 +302,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
 
           {/* 3. FACEBOOK OPTIONAL REDIRECT (Matches Step 1 & Step 2 Card Style) */}
           <div
-            className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all ${
+            className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all card-interactive ${
               hasVisitedFacebook
                 ? "bg-blue-50/70 border-blue-400/80 shadow-xs"
                 : "bg-white border-neutral-200/90 shadow-sm hover:border-blue-300"
@@ -334,7 +334,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   onClick={handleOpenFacebook}
-                  className={`px-3 sm:px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-xs ${
+                  className={`px-3 sm:px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-xs tap-feedback ${
                     hasVisitedFacebook
                       ? "bg-blue-600 hover:bg-blue-700 text-white"
                       : "bg-[#1877F2] hover:bg-blue-700 text-white"
@@ -354,7 +354,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
                 </button>
                 <button
                   onClick={() => setQrModalPlatform("Facebook")}
-                  className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition"
+                  className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition tap-feedback"
                   title="Scan QR"
                 >
                   <QrCode className="w-4 h-4" />
@@ -364,7 +364,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
           </div>
 
           {/* 4. GOOGLE REVIEW OPTIONAL BONUS */}
-          <div className="w-full p-3 rounded-xl bg-neutral-50/90 hover:bg-amber-50/30 border border-neutral-200/80 hover:border-amber-300 transition-all flex items-center justify-between gap-2 shadow-2xs">
+          <div className="w-full p-3 rounded-xl bg-neutral-50/90 hover:bg-amber-50/30 border border-neutral-200/80 hover:border-amber-300 transition-all flex items-center justify-between gap-2 shadow-2xs card-interactive">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
                 <Star className="w-4 h-4 fill-amber-400 text-amber-500" />

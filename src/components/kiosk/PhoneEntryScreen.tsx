@@ -200,7 +200,7 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
                   error
                     ? "border-red-500 bg-red-50/20"
                     : phone.length === 10
-                    ? "border-amber-500 ring-4 ring-amber-400/20"
+                    ? "border-[#DE9F35] animate-focus-breathe"
                     : "border-neutral-300"
                 } shadow-sm`}
               >
@@ -239,12 +239,12 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
 
             {/* Consent checkbox */}
             <div className="w-full max-w-[280px] sm:max-w-xs mb-3">
-              <label className="flex items-start gap-2 cursor-pointer text-left select-none">
+              <label className="flex items-start gap-2 cursor-pointer text-left select-none tap-feedback">
                 <input
                   type="checkbox"
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 rounded text-amber-600 focus:ring-amber-500 border-neutral-300 cursor-pointer"
+                  className="mt-0.5 w-4 h-4 rounded text-amber-600 focus:ring-amber-500 border-neutral-300 cursor-pointer transition-transform active:scale-90"
                 />
                 <span className="text-[10px] sm:text-[11px] text-neutral-500 leading-tight">
                   I agree to receive my ₹{campaign.rewardAmount} voucher via SMS/WhatsApp and confirm I am a store customer.
@@ -257,11 +257,11 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
               <button
                 onClick={handlePhoneSubmit}
                 disabled={phone.length !== 10 || loading}
-                className={`w-full py-3.5 rounded-2xl font-black text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] ${
+                className={`w-full py-3.5 rounded-2xl font-black text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] tap-feedback ${
                   phone.length === 10 && !loading
                     ? campaign.otpRequired
-                      ? "bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer shadow-emerald-600/30"
-                      : "bg-gradient-to-r from-neutral-900 to-neutral-800 hover:from-black hover:to-neutral-900 text-amber-400 cursor-pointer"
+                      ? "bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer shadow-emerald-600/30 shine-effect animate-subtle-pulse"
+                      : "bg-gradient-to-r from-neutral-900 to-neutral-800 hover:from-black hover:to-neutral-900 text-amber-400 cursor-pointer shine-effect animate-subtle-pulse"
                     : "bg-neutral-300 text-neutral-500 cursor-not-allowed"
                 }`}
               >

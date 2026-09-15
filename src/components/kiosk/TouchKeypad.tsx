@@ -33,7 +33,7 @@ export const TouchKeypad: React.FC<TouchKeypadProps> = ({
               type="button"
               disabled={disabled}
               onClick={onClear}
-              className="h-11 sm:h-16 rounded-xl sm:rounded-2xl bg-neutral-200/70 hover:bg-neutral-300 active:bg-neutral-400 active:scale-95 text-[10px] sm:text-xs font-extrabold tracking-wider text-neutral-700 transition flex items-center justify-center border border-neutral-300/60 shadow-sm"
+              className="h-12 sm:h-16 rounded-xl sm:rounded-2xl bg-neutral-200/80 hover:bg-neutral-300 active:bg-neutral-400 active:scale-95 text-[11px] sm:text-xs font-extrabold tracking-wider text-neutral-700 transition-all flex items-center justify-center border border-neutral-300/60 shadow-xs tap-feedback animate-keypad-tap"
             >
               CLEAR
             </button>
@@ -47,7 +47,7 @@ export const TouchKeypad: React.FC<TouchKeypadProps> = ({
               type="button"
               disabled={disabled}
               onClick={onBackspace}
-              className="h-11 sm:h-16 rounded-xl sm:rounded-2xl bg-neutral-200/70 hover:bg-neutral-300 active:bg-neutral-400 active:scale-95 text-neutral-700 transition flex items-center justify-center border border-neutral-300/60 shadow-sm"
+              className="h-12 sm:h-16 rounded-xl sm:rounded-2xl bg-neutral-200/80 hover:bg-neutral-300 active:bg-neutral-400 active:scale-95 text-neutral-700 transition-all flex items-center justify-center border border-neutral-300/60 shadow-xs tap-feedback animate-keypad-tap"
             >
               <Delete className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
@@ -60,7 +60,7 @@ export const TouchKeypad: React.FC<TouchKeypadProps> = ({
             type="button"
             disabled={disabled}
             onClick={() => onDigit(key)}
-            className="h-11 sm:h-16 rounded-xl sm:rounded-2xl bg-white/90 hover:bg-white active:bg-brand-yellow/50 active:scale-95 text-xl sm:text-3xl font-extrabold text-brand-dark transition flex items-center justify-center border border-white/80 shadow-sm"
+            className="h-12 sm:h-16 rounded-xl sm:rounded-2xl bg-white hover:bg-neutral-50 active:bg-amber-100/80 text-xl sm:text-3xl font-extrabold text-neutral-900 transition-all flex items-center justify-center border border-neutral-200/80 shadow-xs tap-feedback animate-keypad-tap cursor-pointer"
           >
             {key}
           </button>

@@ -219,7 +219,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       {/* 4 CATEGORY CARDS (Unified rounded card container) */}
       <div className="w-full bg-white/95 rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-xs border border-neutral-200/60 grid grid-cols-4 gap-1.5 sm:gap-2 mt-3 sm:mt-4 z-10">
         {/* Smartphones */}
-        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer tap-feedback card-interactive">
           <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] group-hover:bg-amber-50/70 group-hover:shadow-md group-hover:scale-105 transition-all duration-300 flex items-center justify-center text-neutral-800 shadow-2xs">
             <Smartphone className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8] group-hover:text-amber-700 transition-colors" />
           </div>
@@ -229,7 +229,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         </div>
 
         {/* Audio */}
-        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer tap-feedback card-interactive">
           <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] group-hover:bg-amber-50/70 group-hover:shadow-md group-hover:scale-105 transition-all duration-300 flex items-center justify-center text-neutral-800 shadow-2xs">
             <DualEarbudsIcon className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-800 group-hover:text-amber-700 transition-colors" />
           </div>
@@ -239,7 +239,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         </div>
 
         {/* Smartwatches */}
-        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer tap-feedback card-interactive">
           <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] group-hover:bg-amber-50/70 group-hover:shadow-md group-hover:scale-105 transition-all duration-300 flex items-center justify-center text-neutral-800 shadow-2xs">
             <Watch className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8] group-hover:text-amber-700 transition-colors" />
           </div>
@@ -249,7 +249,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         </div>
 
         {/* Accessories */}
-        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+        <div className="group flex flex-col items-center justify-center p-1 rounded-xl hover:bg-neutral-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer tap-feedback card-interactive">
           <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#F4F4F5] group-hover:bg-amber-50/70 group-hover:shadow-md group-hover:scale-105 transition-all duration-300 flex items-center justify-center text-neutral-800 shadow-2xs">
             <Headphones className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8] group-hover:text-amber-700 transition-colors" />
           </div>
@@ -297,10 +297,10 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       <div className="w-full mt-3 sm:mt-4 z-10">
         <button
           onClick={onStartClaim}
-          className="w-full py-3.5 sm:py-4 px-6 rounded-full bg-gradient-to-r from-[#C28E3A] via-[#B88230] to-[#996515] hover:brightness-105 active:scale-[0.98] text-white font-extrabold text-base sm:text-lg shadow-lg shadow-amber-950/20 flex items-center justify-center relative transition-all group shine-effect animate-subtle-pulse"
+          className="w-full py-3.5 sm:py-4 px-6 rounded-full bg-gradient-to-r from-[#C28E3A] via-[#B88230] to-[#996515] hover:brightness-105 active:scale-[0.98] text-white font-extrabold text-base sm:text-lg shadow-lg shadow-amber-950/20 flex items-center justify-center relative transition-all group shine-effect animate-subtle-pulse tap-feedback cursor-pointer"
         >
           <span>Claim My ₹{campaign.rewardAmount}</span>
-          <ArrowRight className="w-5 h-5 absolute right-6 text-white stroke-[2.5] group-hover:translate-x-1 transition-transform" />
+          <ArrowRight className="w-5 h-5 absolute right-6 text-white stroke-[2.5] group-hover:translate-x-1.5 transition-transform" />
         </button>
       </div>
 

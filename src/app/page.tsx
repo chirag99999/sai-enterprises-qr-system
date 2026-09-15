@@ -249,56 +249,61 @@ export default function KioskPage() {
         />
       )}
 
-      {/* Dynamic Screen View */}
-      <div className="flex-1 flex flex-col items-center justify-center p-2 sm:p-4">
-        {currentStep === "WELCOME" && (
-          <WelcomeScreen
-            campaign={campaign}
-            currentStore={currentStore}
-            stores={stores}
-            onSelectStore={(s) => setCurrentStore(s)}
-            onStartClaim={handleStartClaim}
-            onSkip={handleSkipToSocial}
-          />
-        )}
+      {/* Dynamic Screen View with Smooth Page Transition */}
+      <div className="flex-1 flex flex-col items-center justify-center p-2 sm:p-4 w-full">
+        <div
+          key={currentStep}
+          className="w-full flex-1 flex flex-col items-center justify-center animate-page-in"
+        >
+          {currentStep === "WELCOME" && (
+            <WelcomeScreen
+              campaign={campaign}
+              currentStore={currentStore}
+              stores={stores}
+              onSelectStore={(s) => setCurrentStore(s)}
+              onStartClaim={handleStartClaim}
+              onSkip={handleSkipToSocial}
+            />
+          )}
 
-        {currentStep === "PHONE_ENTRY" && (
-          <PhoneEntryScreen
-            campaign={campaign}
-            onSubmitPhone={handleSubmitPhone}
-            onBack={() => setCurrentStep("WELCOME")}
-            onViewExistingVoucher={handleViewExistingVoucher}
-          />
-        )}
+          {currentStep === "PHONE_ENTRY" && (
+            <PhoneEntryScreen
+              campaign={campaign}
+              onSubmitPhone={handleSubmitPhone}
+              onBack={() => setCurrentStep("WELCOME")}
+              onViewExistingVoucher={handleViewExistingVoucher}
+            />
+          )}
 
-        {currentStep === "REVIEW_SOCIAL" && (
-          <ReviewSocialScreen
-            campaign={campaign}
-            phone={phone}
-            onOpenReview={handleOpenReview}
-            onSocialClick={handleSocialClick}
-            onConfirmCompleted={handleConfirmCompleted}
-            onBack={() => setCurrentStep("PHONE_ENTRY")}
-            loading={unlockLoading}
-          />
-        )}
+          {currentStep === "REVIEW_SOCIAL" && (
+            <ReviewSocialScreen
+              campaign={campaign}
+              phone={phone}
+              onOpenReview={handleOpenReview}
+              onSocialClick={handleSocialClick}
+              onConfirmCompleted={handleConfirmCompleted}
+              onBack={() => setCurrentStep("PHONE_ENTRY")}
+              loading={unlockLoading}
+            />
+          )}
 
-        {currentStep === "REWARD_UNLOCK" && unlockedVoucher && (
-          <RewardUnlockScreen
-            campaign={campaign}
-            voucher={unlockedVoucher}
-            isDuplicate={isDuplicateVoucher}
-            onFinish={resetKiosk}
-          />
-        )}
+          {currentStep === "REWARD_UNLOCK" && unlockedVoucher && (
+            <RewardUnlockScreen
+              campaign={campaign}
+              voucher={unlockedVoucher}
+              isDuplicate={isDuplicateVoucher}
+              onFinish={resetKiosk}
+            />
+          )}
 
-        {currentStep === "SKIP_HUB" && (
-          <SkipSocialHub
-            campaign={campaign}
-            onBackToOffer={() => setCurrentStep("WELCOME")}
-            onSocialClick={handleSocialClick}
-          />
-        )}
+          {currentStep === "SKIP_HUB" && (
+            <SkipSocialHub
+              campaign={campaign}
+              onBackToOffer={() => setCurrentStep("WELCOME")}
+              onSocialClick={handleSocialClick}
+            />
+          )}
+        </div>
       </div>
 
       {/* Subtle Bottom Footer (on sub-screens) */}
