@@ -247,6 +247,42 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
     }
   };
 
+  // Primary submit on Phone screen (checks if OTP is required)
+  const handlePhoneSubmit = async () => {
+    if (phone.length !== 10) {
+      setError("Please enter a complete 10-digit mobile number");
+      return;
+    }
+
+    if (!consent) {
+      setError("Please accept consent to receive your voucher");
+      return;
+    }
+
+    // If OTP is required by the admin, send SMS OTP
+    if (campaign.otpRequired) {
+      handleSendOtp();
+    } else {
+      // If OTP is turned OFF, proceed directly to unlock/social verification
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await onSubmitPhone(phone, consent);
+        setLoading(false);
+        if (!res.success) {
+          setError(res.error || "Failed to process mobile number");
+          return;
+        }
+        if (res.hasExistingVoucher && res.existingVoucher) {
+          onViewExistingVoucher(res.existingVoucher);
+        }
+      } catch (err: any) {
+        setLoading(false);
+        setError(err.message || "Failed to process mobile number");
+      }
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center max-w-lg w-full mx-auto px-2.5 sm:px-4 py-2 sm:py-4">
       {/* Hidden container for invisible Firebase reCAPTCHA */}
@@ -270,7 +306,13 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
             <span>{step === "OTP" ? "Change Phone" : "Back"}</span>
           </button>
           <div className="flex items-center gap-1 text-[11px] sm:text-xs font-black px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-            <span>{step === "OTP" ? "Step 1b: Verify OTP" : "Step 1 of 2: Phone"}</span>
+            <span>
+              {step === "OTP"
+                ? "Step 1b: Verify OTP"
+                : campaign.otpRequired
+                ? "Step 1 of 2: Phone & OTP"
+                : "Step 1 of 2: Phone Number"}
+            </span>
           </div>
         </div>
 
@@ -282,7 +324,9 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
                 Where should we send your ₹{campaign.rewardAmount} voucher?
               </h2>
               <p className="mt-1 text-xs sm:text-sm text-neutral-500 font-medium max-w-sm mx-auto">
-                Enter your 10-digit mobile number to receive your instant SMS verification code.
+                {campaign.otpRequired
+                  ? "Enter your 10-digit mobile number to receive your instant SMS verification code."
+                  : "Enter your 10-digit mobile number to reserve your instant gadget voucher."}
               </p>
             </div>
 
@@ -345,10 +389,10 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
               </label>
             </div>
 
-            {/* Send OTP Button */}
+            {/* Continue / Send OTP Button */}
             <div className="w-full max-w-[280px] sm:max-w-xs">
               <button
-                onClick={handleSendOtp}
+                onClick={handlePhoneSubmit}
                 disabled={phone.length !== 10 || loading}
                 className={`w-full py-3.5 rounded-2xl font-black text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] ${
                   phone.length === 10 && !loading
@@ -359,11 +403,15 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
-                    <span>Sending SMS OTP...</span>
+                    <span>
+                      {campaign.otpRequired ? "Sending SMS OTP..." : "Reserving Voucher..."}
+                    </span>
                   </span>
                 ) : (
                   <>
-                    <span>SEND FREE SMS OTP</span>
+                    <span>
+                      {campaign.otpRequired ? "SEND FREE SMS OTP" : "CONTINUE"}
+                    </span>
                     <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                   </>
                 )}

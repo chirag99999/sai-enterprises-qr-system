@@ -145,6 +145,20 @@ export default function AdminPage() {
     }
   };
 
+  const handleToggleOtp = async () => {
+    const updated = { ...campaign, otpRequired: !campaign.otpRequired };
+    setCampaign(updated);
+    try {
+      await fetch("/api/campaign", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+      });
+    } catch (e) {
+      console.error("Failed to toggle OTP setting:", e);
+    }
+  };
+
   // Prevent flash while checking auth
   if (isCheckingAuth) {
     return (
@@ -278,6 +292,33 @@ export default function AdminPage() {
               ))}
             </select>
           </div>
+
+          {/* 1-Click Customer OTP Verification Toggle */}
+          <button
+            onClick={handleToggleOtp}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-2xs active:scale-95 ${
+              campaign.otpRequired
+                ? "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100"
+                : "bg-neutral-100 text-neutral-600 border-neutral-300 hover:bg-neutral-200"
+            }`}
+            title="Click to toggle Customer Phone OTP Verification ON or OFF"
+          >
+            <ShieldCheck
+              className={`w-3.5 h-3.5 ${
+                campaign.otpRequired ? "text-emerald-600" : "text-neutral-400"
+              }`}
+            />
+            <span>Customer OTP:</span>
+            <span
+              className={`px-1.5 py-0.2 rounded-md font-black text-[10px] uppercase ${
+                campaign.otpRequired
+                  ? "bg-emerald-600 text-white"
+                  : "bg-neutral-300 text-neutral-700"
+              }`}
+            >
+              {campaign.otpRequired ? "ON" : "OFF"}
+            </span>
+          </button>
 
           <Link
             href="/pos"
