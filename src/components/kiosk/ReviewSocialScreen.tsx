@@ -172,8 +172,8 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
           </div>
         </div>
 
-        {/* 2 MANDATORY REDIRECT CARDS */}
-        <div className="w-full space-y-3 mb-4">
+        {/* ACTION CARDS (Instagram, WhatsApp, Facebook, Google Review) */}
+        <div className="w-full space-y-2.5 sm:space-y-3 mb-4 z-10">
           {/* 1. INSTAGRAM MANDATORY REDIRECT */}
           <div
             className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all ${
@@ -299,68 +299,74 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
               </div>
             </div>
           </div>
-        </div>
 
-        {/* BONUS: OPTIONAL CHANNELS (Facebook & Google Review) */}
-        <div className="w-full space-y-2 mb-4 z-10">
-          <div className="flex items-center justify-between px-1">
-            <span className="text-[10.5px] font-black uppercase tracking-wider text-neutral-400">
-              Optional Bonus Channels
-            </span>
-            <span className="text-[10px] text-neutral-400 font-semibold">
-              Not required to claim ₹{campaign.rewardAmount}
-            </span>
-          </div>
-
-          {/* 1. FACEBOOK OPTIONAL BONUS */}
-          <div className="w-full p-3 rounded-xl bg-neutral-50/90 hover:bg-blue-50/30 border border-neutral-200/80 hover:border-blue-300 transition-all flex items-center justify-between gap-2 shadow-2xs">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-[#1877F2] text-white flex items-center justify-center shrink-0 shadow-2xs">
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-xs font-bold text-neutral-800">
-                    Follow New SaiKeshav on Facebook
-                  </span>
-                  <span className="text-[9px] font-extrabold text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded">
-                    Optional Bonus
-                  </span>
+          {/* 3. FACEBOOK OPTIONAL REDIRECT (Matches Step 1 & Step 2 Card Style) */}
+          <div
+            className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all ${
+              hasVisitedFacebook
+                ? "bg-blue-50/70 border-blue-400/80 shadow-xs"
+                : "bg-white border-neutral-200/90 shadow-sm hover:border-blue-300"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-[#1877F2] flex items-center justify-center text-white shrink-0 shadow-sm">
+                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                  </svg>
                 </div>
-                <p className="text-[10.5px] text-neutral-500 truncate">
-                  Deals, new mobile launches &amp; local updates
-                </p>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h4 className="text-xs sm:text-sm font-black text-neutral-900 leading-tight">
+                      Follow on Facebook
+                    </h4>
+                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">
+                      Optional Bonus
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-neutral-500 font-medium truncate">
+                    Deals, gadget unboxings &amp; festival offers
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center gap-1 shrink-0">
-              <button
-                onClick={handleOpenFacebook}
-                className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-bold flex items-center gap-1 transition active:scale-95 ${
-                  hasVisitedFacebook
-                    ? "bg-blue-50 border-blue-300 text-blue-700 font-black"
-                    : "bg-white border-neutral-300 hover:bg-neutral-100 text-neutral-700"
-                }`}
-              >
-                <span>{hasVisitedFacebook ? "Followed ✓" : "Visit Page"}</span>
-                <ExternalLink className="w-3 h-3" />
-              </button>
-              <button
-                onClick={() => setQrModalPlatform("Facebook")}
-                className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition"
-                title="Scan QR"
-              >
-                <QrCode className="w-3.5 h-3.5" />
-              </button>
+              {/* Action */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  onClick={handleOpenFacebook}
+                  className={`px-3 sm:px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-xs ${
+                    hasVisitedFacebook
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-[#1877F2] hover:bg-blue-700 text-white"
+                  }`}
+                >
+                  {hasVisitedFacebook ? (
+                    <>
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Followed ✓</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Open Page</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setQrModalPlatform("Facebook")}
+                  className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-600 transition"
+                  title="Scan QR"
+                >
+                  <QrCode className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* 2. GOOGLE REVIEW OPTIONAL BONUS */}
+          {/* 4. GOOGLE REVIEW OPTIONAL BONUS */}
           <div className="w-full p-3 rounded-xl bg-neutral-50/90 hover:bg-amber-50/30 border border-neutral-200/80 hover:border-amber-300 transition-all flex items-center justify-between gap-2 shadow-2xs">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
+              <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
                 <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
               </div>
               <div className="min-w-0">
