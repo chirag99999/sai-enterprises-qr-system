@@ -11,6 +11,7 @@ import {
   QrCode,
   ShieldCheck,
   Smartphone,
+  Lock,
 } from "lucide-react";
 import { GlassCard } from "../ui/GlassCard";
 import { TouchKeypad } from "./TouchKeypad";
@@ -129,6 +130,7 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
 
   // Step 2: Proceed after sending WhatsApp code
   const handleConfirmVerified = async () => {
+    if (!hasSentWhatsApp) return;
     setLoading(true);
     setError(null);
     try {
@@ -335,23 +337,28 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
               {/* Tablet Kiosk QR Code Option */}
               <button
                 type="button"
-                onClick={() => setShowQrModal(true)}
-                className="w-full py-2.5 px-3 rounded-xl bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-700 text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-2xs"
+                onClick={() => {
+                  setHasSentWhatsApp(true);
+                  setShowQrModal(true);
+                }}
+                className="w-full py-2.5 px-3 rounded-xl bg-white border border-neutral-200 hover:bg-neutral-50 active:bg-neutral-100 text-neutral-700 text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-2xs tap-feedback"
               >
                 <QrCode className="w-4 h-4 text-emerald-600" />
                 <span>On Store Tablet? Scan QR Code</span>
               </button>
             </div>
 
-            {/* Once tapped / verified button */}
+            {/* Once tapped / verified button (Activated only after either top button is clicked) */}
             <div className="w-full max-w-xs mt-4 pt-4 border-t border-neutral-200">
               <button
                 onClick={handleConfirmVerified}
-                disabled={loading}
-                className={`w-full py-3.5 px-4 rounded-2xl font-black text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] ${
-                  hasSentWhatsApp
-                    ? "bg-gradient-to-r from-neutral-900 to-neutral-800 text-amber-400 hover:from-black hover:to-neutral-900 cursor-pointer animate-pulse"
-                    : "bg-neutral-900 text-white hover:bg-black cursor-pointer"
+                disabled={!hasSentWhatsApp || loading}
+                className={`w-full py-3.5 px-4 rounded-2xl font-black text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] tap-feedback ${
+                  loading
+                    ? "bg-neutral-800 text-white cursor-wait"
+                    : hasSentWhatsApp
+                    ? "bg-gradient-to-r from-neutral-900 to-neutral-800 text-amber-400 hover:from-black hover:to-neutral-900 cursor-pointer shadow-amber-950/20 shine-effect animate-subtle-pulse"
+                    : "bg-neutral-200 text-neutral-400 cursor-not-allowed border border-neutral-300"
                 }`}
               >
                 {loading ? (
@@ -367,13 +374,21 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
                   </>
                 ) : (
                   <>
+                    <Lock className="w-4 h-4 text-neutral-400" />
                     <span>I&apos;VE SENT CODE — CONTINUE</span>
-                    <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
-              <p className="text-[10px] text-neutral-400 mt-1.5 font-medium">
-                Instant 100% Free verification with New SaiKeshav Enterprises.
+              <p className="text-[10px] text-center mt-1.5 font-medium transition-colors">
+                {hasSentWhatsApp ? (
+                  <span className="text-emerald-700 font-bold">
+                    ✓ Action verified! Tap above to claim your ₹{campaign.rewardAmount} voucher.
+                  </span>
+                ) : (
+                  <span className="text-neutral-400">
+                    * Tap &quot;OPEN WHATSAPP&quot; or &quot;Scan QR Code&quot; above to activate this button.
+                  </span>
+                )}
               </p>
             </div>
           </div>
