@@ -46,7 +46,18 @@ export async function syncLeadToGoogleSheet(
       body: JSON.stringify(lead),
       redirect: "follow",
     });
-    return { success: res.ok || res.status === 302 || res.status === 200 };
+    const bodyText = await res.text();
+    const isSuccess = res.ok || res.status === 302 || res.status === 200;
+    if (!isSuccess || bodyText.includes("accounts.google.com") || bodyText.includes("Sign in")) {
+      console.error(
+        `[GoogleSheetSync] Webhook failed (status ${res.status}): ${bodyText.slice(0, 300)}`
+      );
+      return {
+        success: false,
+        error: `Webhook returned status ${res.status} (Authentication or permission issue).`,
+      };
+    }
+    return { success: true };
   } catch (err: any) {
     console.warn("Could not push lead to Google Sheet webhook:", err.message);
     return { success: false, error: err.message };
