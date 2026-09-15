@@ -94,7 +94,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
             <span>Required Step</span>
           </div>
           <h3 className="text-base sm:text-xl font-extrabold text-brand-dark">
-            Rate Sai Enterprises on Google
+            Rate Sai Keshav Enterprises on Google
           </h3>
           <p className="text-[11px] sm:text-xs text-neutral-500 max-w-md mx-auto mt-0.5 mb-3">
             Share quick feedback on Google to activate your ₹{campaign.rewardAmount} coupon.
