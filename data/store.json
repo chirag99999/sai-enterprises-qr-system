@@ -37,11 +37,10 @@
       "facebookPage": "https://www.facebook.com/share/1J1GDYGkxs/?mibextid=wwXIfr"
     },
     "enabledStores": [
-      "store-sai-01",
-      "store-sai-02",
-      "store-sai-03"
+      "store-sai-01"
     ],
-    "otpRequired": false,
+    "otpRequired": true,
+    "storeWhatsAppNumber": "9439914133",
     "dailyCapPerStore": 150,
     "googleSheetWebhookUrl": "https://script.google.com/macros/s/AKfycbwiJihWJtE2YVaUejBTpxsVzmNT2Qqw2NPvIzlOzhGlsIUSDHqshjAydP2gI28cjfzZ/exec",
     "isActive": true

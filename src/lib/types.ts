@@ -30,6 +30,7 @@ export interface Campaign {
   };
   enabledStores: string[];
   otpRequired: boolean;
+  storeWhatsAppNumber?: string;
   dailyCapPerStore: number;
   googleSheetUrl?: string;
   googleSheetWebhookUrl?: string;

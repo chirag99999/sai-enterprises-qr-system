@@ -1,25 +1,20 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { Campaign, Voucher } from "@/lib/types";
 import {
   ArrowRight,
   ArrowLeft,
   AlertCircle,
-  KeyRound,
-  RefreshCw,
-  Edit2,
+  ExternalLink,
   CheckCircle2,
+  QrCode,
   ShieldCheck,
+  Smartphone,
 } from "lucide-react";
 import { GlassCard } from "../ui/GlassCard";
 import { TouchKeypad } from "./TouchKeypad";
-import {
-  isFirebaseConfigured,
-  getFirebaseAuth,
-  ConfirmationResult,
-} from "@/lib/firebase";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { QRCodeSVG } from "qrcode.react";
 
 interface PhoneEntryScreenProps {
   campaign: Campaign;
@@ -42,212 +37,50 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
   onBack,
   onViewExistingVoucher,
 }) => {
-  // Mode: "PHONE" or "OTP"
-  const [step, setStep] = useState<"PHONE" | "OTP">("PHONE");
+  const [step, setStep] = useState<"PHONE" | "WHATSAPP_VERIFY">("PHONE");
   const [phone, setPhone] = useState<string>("");
-  const [otp, setOtp] = useState<string>("");
   const [consent, setConsent] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Firebase ConfirmationResult & timer
-  const [confirmationResult, setConfirmationResult] =
-    useState<ConfirmationResult | null>(null);
-  const [resendCooldown, setResendCooldown] = useState<number>(0);
-  const [isDemoMode, setIsDemoMode] = useState<boolean>(false);
+  // WhatsApp 1-Tap Verification state
+  const [verificationCode, setVerificationCode] = useState<string>("");
+  const [hasSentWhatsApp, setHasSentWhatsApp] = useState<boolean>(false);
+  const [showQrModal, setShowQrModal] = useState<boolean>(false);
 
-  // Ref to hold recaptcha verifier
-  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
+  const storePhone = campaign.storeWhatsAppNumber || "9439914133";
 
-  // Countdown timer for Resend OTP
-  useEffect(() => {
-    if (resendCooldown <= 0) return;
-    const timer = setInterval(() => {
-      setResendCooldown((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [resendCooldown]);
-
-  // Clean up reCAPTCHA on unmount
-  useEffect(() => {
-    return () => {
-      if (recaptchaVerifierRef.current) {
-        try {
-          recaptchaVerifierRef.current.clear();
-        } catch {
-          // ignore
-        }
-      }
-    };
-  }, []);
-
-  // Format raw 10 digits
+  // Format 10 digits
   const formatPhone = (raw: string) => {
     if (raw.length <= 5) return raw;
     return `${raw.slice(0, 5)} ${raw.slice(5)}`;
   };
 
-  // Keypad handlers for PHONE step
-  const handlePhoneDigit = (digit: string) => {
+  // Touch keypad handlers
+  const handleDigit = (digit: string) => {
     if (phone.length < 10) {
       setPhone((prev) => prev + digit);
       setError(null);
     }
   };
 
-  const handlePhoneBackspace = () => {
+  const handleBackspace = () => {
     setPhone((prev) => prev.slice(0, -1));
     setError(null);
   };
 
-  const handlePhoneClear = () => {
+  const handleClear = () => {
     setPhone("");
     setError(null);
   };
 
-  // Keypad handlers for OTP step
-  const handleOtpDigit = (digit: string) => {
-    if (otp.length < 6) {
-      const newOtp = otp + digit;
-      setOtp(newOtp);
-      setError(null);
-      if (newOtp.length === 6) {
-        handleVerifyOtp(newOtp);
-      }
-    }
+  // Build WhatsApp URL
+  const generateWhatsAppUrl = (code: string) => {
+    const text = `Hi New SaiKeshav Enterprises! Verifying my mobile number +91 ${phone} to claim my ₹${campaign.rewardAmount} voucher. Verification Code: ${code}`;
+    return `https://wa.me/91${storePhone}?text=${encodeURIComponent(text)}`;
   };
 
-  const handleOtpBackspace = () => {
-    setOtp((prev) => prev.slice(0, -1));
-    setError(null);
-  };
-
-  const handleOtpClear = () => {
-    setOtp("");
-    setError(null);
-  };
-
-  // Step 1: Send SMS OTP
-  const handleSendOtp = async () => {
-    if (phone.length !== 10) {
-      setError("Please enter a complete 10-digit mobile number");
-      return;
-    }
-
-    if (!consent) {
-      setError("Please accept consent to receive your voucher");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    const fullPhoneNumber = `+91${phone}`;
-
-    // Check if Firebase keys are configured
-    if (isFirebaseConfigured()) {
-      try {
-        const auth = getFirebaseAuth();
-        if (!auth) throw new Error("Firebase auth not available");
-
-        // Initialize invisible reCAPTCHA
-        if (!recaptchaVerifierRef.current) {
-          recaptchaVerifierRef.current = new RecaptchaVerifier(
-            auth,
-            "recaptcha-container",
-            {
-              size: "invisible",
-              callback: () => {
-                // reCAPTCHA solved
-              },
-            }
-          );
-        }
-
-        const confirmation = await signInWithPhoneNumber(
-          auth,
-          fullPhoneNumber,
-          recaptchaVerifierRef.current
-        );
-
-        setConfirmationResult(confirmation);
-        setIsDemoMode(false);
-        setStep("OTP");
-        setOtp("");
-        setResendCooldown(30);
-      } catch (err: any) {
-        console.error("Firebase SMS error:", err);
-        // If reCAPTCHA or Firebase fails, report clear message
-        setError(
-          err.message ||
-            "Unable to send SMS. Please check mobile number or try again."
-        );
-        if (recaptchaVerifierRef.current) {
-          try {
-            recaptchaVerifierRef.current.clear();
-            recaptchaVerifierRef.current = null;
-          } catch {
-            // ignore
-          }
-        }
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      // Firebase not configured yet in environment -> Instant Demo Simulation
-      setIsDemoMode(true);
-      setStep("OTP");
-      setOtp("");
-      setResendCooldown(30);
-      setLoading(false);
-    }
-  };
-
-  // Step 2: Verify 6-digit OTP
-  const handleVerifyOtp = async (codeToVerify: string = otp) => {
-    if (codeToVerify.length !== 6) {
-      setError("Please enter the full 6-digit OTP");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      if (confirmationResult && !isDemoMode) {
-        // Real Firebase SMS verification
-        await confirmationResult.confirm(codeToVerify);
-      } else {
-        // Demo fallback verification (accepts 123456 or any 6 digits in demo mode)
-        if (codeToVerify !== "123456" && codeToVerify.length !== 6) {
-          throw new Error("Invalid OTP code. In demo mode, use 123456");
-        }
-      }
-
-      // Once OTP is confirmed, submit the lead and advance
-      const res = await onSubmitPhone(phone, consent);
-      if (!res.success) {
-        setError(res.error || "Failed to process mobile number");
-        setLoading(false);
-        return;
-      }
-
-      if (res.hasExistingVoucher && res.existingVoucher) {
-        onViewExistingVoucher(res.existingVoucher);
-      }
-    } catch (err: any) {
-      console.error("OTP verification failed:", err);
-      setError(
-        err.message?.includes("invalid-verification-code")
-          ? "Incorrect OTP. Please check the SMS and re-enter."
-          : err.message || "Invalid OTP code. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Primary submit on Phone screen (checks if OTP is required)
+  // Step 1: Submit Phone or Trigger WhatsApp Verification
   const handlePhoneSubmit = async () => {
     if (phone.length !== 10) {
       setError("Please enter a complete 10-digit mobile number");
@@ -259,11 +92,15 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
       return;
     }
 
-    // If OTP is required by the admin, send SMS OTP
+    // If verification is ON: Generate code and open WhatsApp verification
     if (campaign.otpRequired) {
-      handleSendOtp();
+      const randomCode = Math.floor(1000 + Math.random() * 9000).toString();
+      setVerificationCode(randomCode);
+      setHasSentWhatsApp(false);
+      setStep("WHATSAPP_VERIFY");
+      setError(null);
     } else {
-      // If OTP is turned OFF, proceed directly to unlock/social verification
+      // If verification is OFF: Directly submit
       setLoading(true);
       setError(null);
       try {
@@ -283,17 +120,41 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
     }
   };
 
+  // Open WhatsApp with prefilled message
+  const handleOpenWhatsApp = () => {
+    setHasSentWhatsApp(true);
+    const url = generateWhatsAppUrl(verificationCode);
+    window.open(url, "_blank");
+  };
+
+  // Step 2: Proceed after sending WhatsApp code
+  const handleConfirmVerified = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await onSubmitPhone(phone, consent);
+      setLoading(false);
+      if (!res.success) {
+        setError(res.error || "Failed to process mobile number");
+        return;
+      }
+      if (res.hasExistingVoucher && res.existingVoucher) {
+        onViewExistingVoucher(res.existingVoucher);
+      }
+    } catch (err: any) {
+      setLoading(false);
+      setError(err.message || "Failed to process mobile number");
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center max-w-lg w-full mx-auto px-2.5 sm:px-4 py-2 sm:py-4">
-      {/* Hidden container for invisible Firebase reCAPTCHA */}
-      <div id="recaptcha-container"></div>
-
       <GlassCard elevated className="w-full p-4 sm:p-7 flex flex-col items-center">
-        {/* Step Indicator & Back Button */}
+        {/* Top Navigation */}
         <div className="w-full flex items-center justify-between mb-3">
           <button
             onClick={() => {
-              if (step === "OTP") {
+              if (step === "WHATSAPP_VERIFY") {
                 setStep("PHONE");
                 setError(null);
               } else {
@@ -303,15 +164,13 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
             className="flex items-center gap-1 text-xs font-bold text-neutral-600 hover:text-brand-dark px-3 py-1 rounded-full bg-white/70 border border-neutral-200 hover:bg-white transition active:scale-95 shadow-2xs"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>{step === "OTP" ? "Change Phone" : "Back"}</span>
+            <span>{step === "WHATSAPP_VERIFY" ? "Change Phone" : "Back"}</span>
           </button>
           <div className="flex items-center gap-1 text-[11px] sm:text-xs font-black px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
             <span>
-              {step === "OTP"
-                ? "Step 1b: Verify OTP"
-                : campaign.otpRequired
-                ? "Step 1 of 2: Phone & OTP"
-                : "Step 1 of 2: Phone Number"}
+              {step === "WHATSAPP_VERIFY"
+                ? "Step 1b: WhatsApp Verification"
+                : "Step 1 of 2: Mobile Number"}
             </span>
           </div>
         </div>
@@ -325,12 +184,12 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
               </h2>
               <p className="mt-1 text-xs sm:text-sm text-neutral-500 font-medium max-w-sm mx-auto">
                 {campaign.otpRequired
-                  ? "Enter your 10-digit mobile number to receive your instant SMS verification code."
+                  ? "Enter your 10-digit mobile number for free 1-tap WhatsApp verification."
                   : "Enter your 10-digit mobile number to reserve your instant gadget voucher."}
               </p>
             </div>
 
-            {/* Phone Display Input */}
+            {/* Phone Display Box */}
             <div className="w-full max-w-[280px] sm:max-w-xs mb-3">
               <div
                 className={`flex items-center gap-2 px-3 sm:px-4 py-3 rounded-2xl bg-white border-2 transition-all ${
@@ -367,9 +226,9 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
             {/* Touch Keypad */}
             <div className="w-full mb-3">
               <TouchKeypad
-                onDigit={handlePhoneDigit}
-                onBackspace={handlePhoneBackspace}
-                onClear={handlePhoneClear}
+                onDigit={handleDigit}
+                onBackspace={handleBackspace}
+                onClear={handleClear}
                 disabled={loading}
               />
             </div>
@@ -389,153 +248,170 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
               </label>
             </div>
 
-            {/* Continue / Send OTP Button */}
+            {/* Primary Action Button */}
             <div className="w-full max-w-[280px] sm:max-w-xs">
               <button
                 onClick={handlePhoneSubmit}
                 disabled={phone.length !== 10 || loading}
                 className={`w-full py-3.5 rounded-2xl font-black text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] ${
                   phone.length === 10 && !loading
-                    ? "bg-gradient-to-r from-neutral-900 to-neutral-800 hover:from-black hover:to-neutral-900 text-amber-400 cursor-pointer"
-                    : "bg-neutral-300 text-neutral-500 cursor-not-allowed"
-                }`}
-              >
-                {loading ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
-                    <span>
-                      {campaign.otpRequired ? "Sending SMS OTP..." : "Reserving Voucher..."}
-                    </span>
-                  </span>
-                ) : (
-                  <>
-                    <span>
-                      {campaign.otpRequired ? "SEND FREE SMS OTP" : "CONTINUE"}
-                    </span>
-                    <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-                  </>
-                )}
-              </button>
-            </div>
-          </>
-        )}
-
-        {/* --- STEP 2: 6-DIGIT OTP VERIFICATION --- */}
-        {step === "OTP" && (
-          <>
-            <div className="text-center mb-3 sm:mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto mb-2 shadow-2xs">
-                <KeyRound className="w-6 h-6" />
-              </div>
-              <h2 className="text-lg sm:text-2xl font-black text-neutral-900 tracking-tight leading-snug">
-                Enter 6-Digit OTP
-              </h2>
-              <div className="flex items-center justify-center gap-1.5 mt-1">
-                <span className="text-xs font-bold text-neutral-600">
-                  Sent via SMS to +91 {phone.slice(0, 5)} {phone.slice(5)}
-                </span>
-                <button
-                  onClick={() => {
-                    setStep("PHONE");
-                    setError(null);
-                  }}
-                  className="text-amber-700 hover:text-amber-800 p-0.5"
-                  title="Change Number"
-                >
-                  <Edit2 className="w-3 h-3" />
-                </button>
-              </div>
-
-              {isDemoMode && (
-                <div className="mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-bold">
-                  <span>💡 Test Demo OTP: <strong>123456</strong> (Add Firebase keys to send live SMS)</span>
-                </div>
-              )}
-            </div>
-
-            {/* 6 OTP Boxes */}
-            <div className="w-full max-w-[320px] mb-2">
-              <div className="flex gap-1.5 sm:gap-2 justify-center">
-                {[0, 1, 2, 3, 4, 5].map((idx) => (
-                  <div
-                    key={idx}
-                    className={`w-9 h-12 sm:w-11 sm:h-14 rounded-xl border-2 flex items-center justify-center font-mono font-black text-xl sm:text-2xl transition-all shadow-xs ${
-                      otp.length === idx
-                        ? "border-amber-500 bg-amber-50/50 ring-2 ring-amber-400/20"
-                        : otp[idx]
-                        ? "border-neutral-900 bg-white text-neutral-900"
-                        : "border-neutral-200 bg-neutral-50 text-neutral-300"
-                    }`}
-                  >
-                    {otp[idx] || ""}
-                  </div>
-                ))}
-              </div>
-
-              {error && (
-                <div className="flex items-center justify-center gap-1 mt-2 text-xs font-bold text-red-600 px-1 text-center animate-in fade-in">
-                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                  <span>{error}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Resend Action */}
-            <div className="flex items-center justify-center gap-1 text-xs text-neutral-500 mb-3">
-              <span>Didn&apos;t receive code?</span>
-              {resendCooldown > 0 ? (
-                <span className="font-bold text-neutral-700">
-                  Resend in {resendCooldown}s
-                </span>
-              ) : (
-                <button
-                  onClick={handleSendOtp}
-                  disabled={loading}
-                  className="font-extrabold text-amber-700 hover:text-amber-800 underline flex items-center gap-1"
-                >
-                  <RefreshCw className="w-3 h-3" />
-                  <span>Resend SMS</span>
-                </button>
-              )}
-            </div>
-
-            {/* Touch Keypad for 6-digit OTP */}
-            <div className="w-full mb-3">
-              <TouchKeypad
-                onDigit={handleOtpDigit}
-                onBackspace={handleOtpBackspace}
-                onClear={handleOtpClear}
-                disabled={loading}
-              />
-            </div>
-
-            {/* Verify Button */}
-            <div className="w-full max-w-[280px] sm:max-w-xs">
-              <button
-                onClick={() => handleVerifyOtp()}
-                disabled={otp.length !== 6 || loading}
-                className={`w-full py-3.5 rounded-2xl font-black text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] ${
-                  otp.length === 6 && !loading
-                    ? "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white cursor-pointer"
+                    ? campaign.otpRequired
+                      ? "bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer shadow-emerald-600/30"
+                      : "bg-gradient-to-r from-neutral-900 to-neutral-800 hover:from-black hover:to-neutral-900 text-amber-400 cursor-pointer"
                     : "bg-neutral-300 text-neutral-500 cursor-not-allowed"
                 }`}
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Verifying OTP...</span>
+                    <span>Processing...</span>
                   </span>
+                ) : campaign.otpRequired ? (
+                  <>
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                    </svg>
+                    <span>VERIFY VIA WHATSAPP (FREE)</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
                 ) : (
                   <>
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>VERIFY &amp; PROCEED</span>
+                    <span>CONTINUE TO CLAIM</span>
+                    <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
             </div>
           </>
         )}
+
+        {/* --- STEP 2: WHATSAPP 1-TAP VERIFICATION CARD --- */}
+        {step === "WHATSAPP_VERIFY" && (
+          <div className="w-full flex flex-col items-center text-center">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center mb-3 shadow-lg shadow-emerald-600/30 animate-in zoom-in-95">
+              <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+              </svg>
+            </div>
+
+            <h2 className="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight leading-snug">
+              1-Tap WhatsApp Verification
+            </h2>
+
+            <p className="text-xs text-neutral-500 mt-1 max-w-xs leading-relaxed">
+              Tap below to send your verification code from your personal WhatsApp to New SaiKeshav Enterprises.
+            </p>
+
+            {/* Big Code Pill */}
+            <div className="my-4 p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-300 w-full max-w-xs shadow-xs">
+              <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 block mb-1">
+                Your Verification Code
+              </span>
+              <div className="text-3xl font-mono font-black text-emerald-950 tracking-[0.3em]">
+                {verificationCode}
+              </div>
+              <span className="text-[11px] text-emerald-700 font-bold block mt-1">
+                For Mobile: +91 {phone.slice(0, 5)} {phone.slice(5)}
+              </span>
+            </div>
+
+            {/* Primary WhatsApp Action Button */}
+            <div className="w-full max-w-xs space-y-2.5">
+              <button
+                onClick={handleOpenWhatsApp}
+                className="w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-black text-sm tracking-wide shadow-md flex items-center justify-center gap-2 transition"
+              >
+                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                </svg>
+                <span>OPEN WHATSAPP &amp; SEND CODE</span>
+                <ExternalLink className="w-4 h-4" />
+              </button>
+
+              {/* Tablet Kiosk QR Code Option */}
+              <button
+                type="button"
+                onClick={() => setShowQrModal(true)}
+                className="w-full py-2.5 px-3 rounded-xl bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-700 text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-2xs"
+              >
+                <QrCode className="w-4 h-4 text-emerald-600" />
+                <span>On Store Tablet? Scan QR Code</span>
+              </button>
+            </div>
+
+            {/* Once tapped / verified button */}
+            <div className="w-full max-w-xs mt-4 pt-4 border-t border-neutral-200">
+              <button
+                onClick={handleConfirmVerified}
+                disabled={loading}
+                className={`w-full py-3.5 px-4 rounded-2xl font-black text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] ${
+                  hasSentWhatsApp
+                    ? "bg-gradient-to-r from-neutral-900 to-neutral-800 text-amber-400 hover:from-black hover:to-neutral-900 cursor-pointer animate-pulse"
+                    : "bg-neutral-900 text-white hover:bg-black cursor-pointer"
+                }`}
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Reserving Voucher...</span>
+                  </span>
+                ) : hasSentWhatsApp ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <span>I&apos;VE SENT CODE — CONTINUE</span>
+                    <ArrowRight className="w-4 h-4 text-amber-400" />
+                  </>
+                ) : (
+                  <>
+                    <span>I&apos;VE SENT CODE — CONTINUE</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+              <p className="text-[10px] text-neutral-400 mt-1.5 font-medium">
+                Instant 100% Free verification with New SaiKeshav Enterprises.
+              </p>
+            </div>
+          </div>
+        )}
       </GlassCard>
+
+      {/* QR Code Modal for Tablet Users */}
+      {showQrModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-white rounded-3xl p-6 max-w-xs w-full shadow-2xl border border-neutral-200 text-center flex flex-col items-center">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center mb-2 shadow-sm">
+              <QrCode className="w-5 h-5" />
+            </div>
+
+            <h3 className="font-black text-base text-neutral-900">
+              Scan with WhatsApp Camera
+            </h3>
+            <p className="text-xs text-neutral-500 mt-0.5 mb-3">
+              Scan with your phone camera to send verification code {verificationCode} directly to our WhatsApp.
+            </p>
+
+            <div className="p-3 bg-white rounded-2xl border-2 border-neutral-100 shadow-inner mb-4">
+              <QRCodeSVG
+                value={generateWhatsAppUrl(verificationCode)}
+                size={160}
+                level="M"
+                includeMargin={false}
+              />
+            </div>
+
+            <button
+              onClick={() => {
+                setHasSentWhatsApp(true);
+                setShowQrModal(false);
+              }}
+              className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs tracking-wide transition active:scale-95"
+            >
+              I Have Scanned &amp; Sent
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
