@@ -231,7 +231,7 @@ export default function AdminPage() {
 
           <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-center gap-1.5 text-[11px] text-neutral-400 font-medium">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Secured for Sai Enterprises Management</span>
+            <span>Secured for New SaiKeshav Enterprises Management</span>
           </div>
         </div>
       </main>

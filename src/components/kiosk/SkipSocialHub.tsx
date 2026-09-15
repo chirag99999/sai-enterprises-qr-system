@@ -65,7 +65,7 @@ export const SkipSocialHub: React.FC<SkipSocialHubProps> = ({
     {
       id: "whatsapp-channel",
       name: "WhatsApp VIP Channel",
-      handle: "Sai Keshav Enterprises, Baripada",
+      handle: "New SaiKeshav Enterprises, Baripada",
       desc: "Instant flash sales, new stock arrival alerts & price drops",
       url: "https://whatsapp.com/channel/0029VbDIQjDI7BeF7j3TDx45",
       ctaText: "Join WhatsApp Channel",
@@ -81,7 +81,7 @@ export const SkipSocialHub: React.FC<SkipSocialHubProps> = ({
     {
       id: "facebook-profile",
       name: "Facebook Official Page",
-      handle: "Sai Keshav Enterprises",
+      handle: "New SaiKeshav Enterprises",
       desc: "Store events, community stories, reviews and gadget demos",
       url: "https://www.facebook.com/profile.php?id=61592129150557",
       ctaText: "Like & Follow on Facebook",
@@ -109,7 +109,7 @@ export const SkipSocialHub: React.FC<SkipSocialHubProps> = ({
     {
       id: "google-reviews",
       name: "Google Customer Reviews",
-      handle: "Sai Keshav Enterprises Ratings",
+      handle: "New SaiKeshav Enterprises Ratings",
       desc: "Verified reviews, photos, store directions & customer experiences",
       url: campaign.reviewUrl,
       ctaText: "Read & Rate Us",
@@ -154,10 +154,10 @@ export const SkipSocialHub: React.FC<SkipSocialHubProps> = ({
         <div className="text-center mb-6 max-w-xl">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold mb-2 shadow-2xs">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Verified Official Accounts • Baripada Flagship</span>
+            <span>Verified Official Accounts • Roxy Road, Baripada</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-brand-dark tracking-tight">
-            Connect with Sai Keshav Enterprises
+            Connect with New SaiKeshav Enterprises
           </h2>
           <p className="mt-1 text-xs sm:text-sm text-neutral-500 font-medium">
             Join our tech community on Instagram, WhatsApp & Facebook for exclusive launch deals, unboxings, and instant support.

@@ -3,30 +3,16 @@ import { Campaign, Store, Voucher } from "./types";
 export const DEFAULT_STORES: Store[] = [
   {
     id: "store-sai-01",
-    name: "Sai Enterprises - Flagship Tech World (MG Road)",
-    city: "Bengaluru",
-    address: "42, Commercial Plaza, MG Road",
-    code: "SAI-MG-01",
-  },
-  {
-    id: "store-sai-02",
-    name: "Sai Enterprises - Gadget Zone (Indiranagar)",
-    city: "Bengaluru",
-    address: "100ft Road, Opp. Metro Pillar 48, Indiranagar",
-    code: "SAI-IND-02",
-  },
-  {
-    id: "store-sai-03",
-    name: "Sai Enterprises - Smart Experience (HSR Layout)",
-    city: "Bengaluru",
-    address: "27th Main, Sector 1, HSR Layout",
-    code: "SAI-HSR-03",
+    name: "New SaiKeshav Enterprises",
+    city: "Baripada",
+    address: "Roxy Road, Baripada, Odisha",
+    code: "SAI-BRP-01",
   },
 ];
 
 export const DEFAULT_CAMPAIGN: Campaign = {
   id: "camp-sai-500",
-  name: "Sai Enterprises ₹500 In-Store Gadget Reward",
+  name: "New SaiKeshav Enterprises ₹500 In-Store Gadget Reward",
   headline: "Get ₹500 OFF Your Next Gadget",
   subheadline:
     "Complete 2 quick steps and unlock an instant ₹500 voucher on Smartphones, Audio, Smartwatches & Premium Accessories.",
@@ -36,7 +22,7 @@ export const DEFAULT_CAMPAIGN: Campaign = {
   validFrom: "2026-09-01T00:00:00Z",
   validTo: "2026-10-31T23:59:59Z",
   terms: [
-    "Valid at all Sai Enterprises physical stores across Bangalore.",
+    "Valid at New SaiKeshav Enterprises, Roxy Road, Baripada.",
     "Applicable on Smartphones, Smartwatches, Earbuds, Chargers, and Premium Accessories.",
     "Minimum purchase value of ₹999 required to redeem the ₹500 voucher.",
     "Limit one ₹500 voucher per mobile number during the campaign window.",

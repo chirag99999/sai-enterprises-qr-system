@@ -284,7 +284,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <span className="text-xs font-bold text-neutral-800">
-                  Rate Sai Keshav on Google
+                  Rate New SaiKeshav on Google
                 </span>
                 <span className="text-[9px] font-bold text-neutral-500 bg-neutral-200/60 px-1.5 py-0.2 rounded">
                   Optional Bonus

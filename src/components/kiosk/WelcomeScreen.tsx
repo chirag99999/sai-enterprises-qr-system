@@ -77,17 +77,16 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           <ChevronLeft className="w-5 h-5 stroke-[2.2]" />
         </button>
 
-        {/* Center Brand Identity */}
-        <div className="flex flex-col items-center text-center cursor-pointer" onClick={() => stores.length > 1 && setShowStorePicker(true)}>
-          <div className="flex items-center gap-1">
-            <h1 className="text-base sm:text-lg font-black text-neutral-900 tracking-tight leading-tight">
-              Sai Enterprises
-            </h1>
-            {stores.length > 1 && <ChevronDown className="w-3.5 h-3.5 text-neutral-500" />}
-          </div>
-          <p className="text-[11px] sm:text-xs text-neutral-500 font-medium tracking-wide">
-            Phones &nbsp;|&nbsp; Gadgets &nbsp;|&nbsp; More for You
-          </p>
+        {/* Center Brand Identity with Official Logo */}
+        <div
+          className="flex flex-col items-center text-center cursor-pointer max-w-[210px] sm:max-w-[250px]"
+          onClick={() => stores.length > 1 && setShowStorePicker(true)}
+        >
+          <img
+            src="/brand_logo.png"
+            alt="New SaiKeshav Enterprises - Roxy Road, Baripada"
+            className="h-10 sm:h-12 w-auto object-contain drop-shadow-xs"
+          />
         </div>
 
         {/* Right Favorite / Heart Button */}
@@ -109,7 +108,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
           <div className="bg-white rounded-2xl p-5 max-w-xs w-full shadow-2xl border border-neutral-200 animate-in fade-in zoom-in-95">
             <h3 className="font-extrabold text-neutral-900 text-base mb-1">Select Store Location</h3>
-            <p className="text-xs text-neutral-500 mb-4">Choose your nearest Sai Enterprises store:</p>
+            <p className="text-xs text-neutral-500 mb-4">Choose your nearest New SaiKeshav Enterprises store:</p>
             <div className="space-y-2">
               {stores.map((s) => (
                 <button

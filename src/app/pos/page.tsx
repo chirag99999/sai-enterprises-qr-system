@@ -68,7 +68,7 @@ export default function PosPage() {
       </div>
 
       <footer className="w-full py-4 text-center text-xs text-neutral-400 font-medium">
-        Sai Enterprises Counter POS System • Real-Time Voucher Validation
+        New SaiKeshav Enterprises Counter POS System • Roxy Road, Baripada
       </footer>
     </main>
   );

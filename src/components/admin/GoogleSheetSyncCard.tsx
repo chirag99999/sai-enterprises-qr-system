@@ -67,8 +67,8 @@ export const GoogleSheetSyncCard: React.FC = () => {
   sheet.appendRow([
     new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
     "+91" + data.phone,
-    data.storeName || "Sai Enterprises",
-    data.storeCode || "SAI-MG-01",
+    data.storeName || "New SaiKeshav Enterprises",
+    data.storeCode || "SAI-BRP-01",
     data.voucherCode || "SAI500",
     data.voucherValue || 500,
     data.status || "ACTIVE",
@@ -124,8 +124,8 @@ export const GoogleSheetSyncCard: React.FC = () => {
           lead: {
             timestamp: new Date().toISOString(),
             phone: "9845012345",
-            storeName: "Sai Enterprises - Flagship Tech World",
-            storeCode: "SAI-MG-01",
+            storeName: "New SaiKeshav Enterprises - Roxy Road, Baripada",
+            storeCode: "SAI-BRP-01",
             voucherCode: "SAI500-LIVE01",
             voucherValue: 500,
             status: "ACTIVE",

@@ -71,8 +71,8 @@ export async function POST(req: Request) {
         await syncLeadToGoogleSheet({
           timestamp: new Date().toISOString(),
           phone: cleanPhone,
-          storeName: store ? store.name : "Sai Enterprises",
-          storeCode: store ? store.code : "SAI-MG-01",
+          storeName: store ? store.name : "New SaiKeshav Enterprises",
+          storeCode: store ? store.code : "SAI-BRP-01",
           voucherCode: existingVoucher ? existingVoucher.code : "CLAIMING_IN_PROGRESS",
           voucherValue: campaign.rewardAmount || 500,
           status: existingVoucher ? existingVoucher.status : "PHONE_ENTERED",

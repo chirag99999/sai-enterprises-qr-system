@@ -87,7 +87,7 @@ export const RewardUnlockScreen: React.FC<RewardUnlockScreenProps> = ({
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-extrabold text-[10px] sm:text-xs uppercase tracking-wider mb-2 sm:mb-3">
           <Sparkles className="w-3 h-3 text-emerald-600 shrink-0" />
           <span>
-            {isDuplicate ? "Voucher Active & Ready" : "Sai Enterprises Voucher Unlocked!"}
+            {isDuplicate ? "Voucher Active & Ready" : "New SaiKeshav Enterprises Voucher Unlocked!"}
           </span>
         </div>
 
@@ -95,7 +95,7 @@ export const RewardUnlockScreen: React.FC<RewardUnlockScreenProps> = ({
           ₹{voucher.value} Off Your Gadget Purchase
         </h2>
         <p className="text-[11px] sm:text-sm text-neutral-500 font-medium mt-0.5 mb-3 sm:mb-4">
-          Present this barcode or code at the Sai Enterprises billing desk.
+          Present this barcode or code at the New SaiKeshav Enterprises billing desk, Roxy Road, Baripada.
         </p>
 
         {/* Voucher Ticket Component */}
@@ -108,7 +108,7 @@ export const RewardUnlockScreen: React.FC<RewardUnlockScreenProps> = ({
           <div className="flex items-center justify-between pb-2 sm:pb-3 border-b border-neutral-100">
             <div className="text-left">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-neutral-400">
-                Sai Enterprises Pass
+                New SaiKeshav Enterprises Pass
               </span>
               <div className="text-xl sm:text-2xl font-black text-brand-dark">
                 ₹{voucher.value} OFF

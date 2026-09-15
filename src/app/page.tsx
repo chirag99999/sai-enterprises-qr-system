@@ -304,7 +304,7 @@ export default function KioskPage() {
       {/* Subtle Bottom Footer (on sub-screens) */}
       {currentStep !== "WELCOME" && (
         <footer className="w-full py-3 text-center text-[11px] text-neutral-400 font-medium z-10">
-          <span>Powered by Sai Enterprises In-Store Experience Engine • Touch Screen Optimized</span>
+          <span>Powered by New SaiKeshav Enterprises In-Store Experience Engine • Roxy Road, Baripada</span>
         </footer>
       )}
     </main>

@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sai Enterprises - Phones & Gadgets | In-Store Reward Kiosk",
-  description: "Customer-facing reward kiosk for Sai Enterprises phone and gadget stores",
+  title: "New SaiKeshav Enterprises - Roxy Road, Baripada | In-Store Reward Kiosk",
+  description: "Official customer reward kiosk for New SaiKeshav Enterprises, Roxy Road, Baripada. Phones, Gadgets & Premium Accessories.",
 };
 
 export const viewport: Viewport = {

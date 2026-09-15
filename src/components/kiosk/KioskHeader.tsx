@@ -61,17 +61,21 @@ export const KioskHeader: React.FC<KioskHeaderProps> = ({
     <header className="w-full px-3.5 sm:px-6 py-2.5 sm:py-4 flex items-center justify-between z-20 shrink-0 gap-2">
       {/* Brand Identity & Store Badge */}
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br from-brand-dark via-neutral-900 to-brand-blue flex items-center justify-center text-brand-yellow font-black text-sm sm:text-xl shadow-md border border-white/40 shrink-0">
-          SE
-        </div>
-        <div className="min-w-0">
+        <Link href="/" className="shrink-0 flex items-center">
+          <img
+            src="/brand_logo.png"
+            alt="New SaiKeshav Enterprises"
+            className="h-8 sm:h-10 w-auto object-contain"
+          />
+        </Link>
+        <div className="min-w-0 hidden sm:block">
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="font-extrabold tracking-tight text-sm sm:text-lg text-brand-dark truncate">
-              Sai Enterprises
+            <span className="font-extrabold tracking-tight text-sm sm:text-base text-brand-dark truncate">
+              New SaiKeshav Enterprises
             </span>
-            <span className="hidden xs:inline-flex text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-brand-yellow/80 font-black text-brand-dark border border-brand-yellow-dark/30 items-center gap-1 shrink-0">
-              <Smartphone className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-brand-dark" />
-              <span>Gadgets</span>
+            <span className="hidden md:inline-flex text-[10px] px-2 py-0.5 rounded-full bg-amber-100 font-bold text-amber-900 border border-amber-300 items-center gap-1 shrink-0">
+              <Smartphone className="w-2.5 h-2.5 text-amber-700" />
+              <span>Roxy Road, Baripada</span>
             </span>
           </div>
           {/* Store Switcher */}
