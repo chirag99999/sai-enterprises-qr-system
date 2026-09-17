@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Campaign } from "@/lib/types";
+import { Campaign, isFreeGiftOffer, getRewardTitle } from "@/lib/types";
 import {
   QrCode,
   ExternalLink,
@@ -13,6 +13,7 @@ import {
   AlertCircle,
   Star,
   Smartphone,
+  Gift,
 } from "lucide-react";
 import { GlassCard } from "../ui/GlassCard";
 import { QRCodeSVG } from "qrcode.react";
@@ -36,6 +37,8 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
   onBack,
   loading,
 }) => {
+  const isFreeGift = isFreeGiftOffer(campaign);
+  const rewardTitle = getRewardTitle(campaign);
   const [hasVisitedInstagram, setHasVisitedInstagram] = useState<boolean>(false);
   const [hasVisitedWhatsApp, setHasVisitedWhatsApp] = useState<boolean>(false);
   const [hasVisitedFacebook, setHasVisitedFacebook] = useState<boolean>(false);
@@ -59,74 +62,88 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
     campaign.reviewUrl ||
     "https://www.google.com/search?q=SAI+KESHAV+ENTERPRISES-Mobiles&kgmid=/g/11j9m4wt35";
 
+  // Mandatory: Must have visited Instagram AND WhatsApp
+  const isMandatoryCompleted = hasVisitedInstagram && hasVisitedWhatsApp;
+  const completedCount =
+    (hasVisitedInstagram ? 1 : 0) + (hasVisitedWhatsApp ? 1 : 0);
+
+  const handleOpenPlatform = (url: string, platform: string) => {
+    onSocialClick(platform);
+    window.open(url, "_blank");
+    if (platform === "Instagram") setHasVisitedInstagram(true);
+    if (platform === "WhatsApp") setHasVisitedWhatsApp(true);
+    if (platform === "Facebook") setHasVisitedFacebook(true);
+    if (platform === "Google") setHasOpenedReview(true);
+  };
+
   const handleOpenInstagram = () => {
-    setHasVisitedInstagram(true);
-    onSocialClick("Instagram");
-    window.open(instagramUrl, "_blank");
+    handleOpenPlatform(instagramUrl, "Instagram");
   };
 
   const handleOpenWhatsApp = () => {
-    setHasVisitedWhatsApp(true);
-    onSocialClick("WhatsApp");
-    window.open(whatsappUrl, "_blank");
+    handleOpenPlatform(whatsappUrl, "WhatsApp");
   };
 
   const handleOpenFacebook = () => {
-    setHasVisitedFacebook(true);
-    onSocialClick("Facebook");
-    window.open(facebookUrl, "_blank");
+    handleOpenPlatform(facebookUrl, "Facebook");
   };
 
   const handleOpenReview = () => {
-    setHasOpenedReview(true);
-    onOpenReview();
-    window.open(reviewUrl, "_blank");
+    handleOpenPlatform(reviewUrl, "Google");
   };
 
-  const completedCount =
-    (hasVisitedInstagram ? 1 : 0) + (hasVisitedWhatsApp ? 1 : 0);
-  const isMandatoryCompleted = hasVisitedInstagram && hasVisitedWhatsApp;
+  const handleScanOnTablet = (platform: "Instagram" | "WhatsApp" | "Facebook" | "Google") => {
+    setQrModalPlatform(platform);
+    if (platform === "Instagram") setHasVisitedInstagram(true);
+    if (platform === "WhatsApp") setHasVisitedWhatsApp(true);
+    if (platform === "Facebook") setHasVisitedFacebook(true);
+    if (platform === "Google") setHasOpenedReview(true);
+  };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center max-w-xl w-full mx-auto px-3 sm:px-4 py-2 sm:py-4">
+    <div className="flex-1 flex flex-col items-center justify-center max-w-lg w-full mx-auto px-2.5 sm:px-4 py-2 sm:py-3.5">
       <GlassCard
         elevated
-        className="w-full p-4 sm:p-7 flex flex-col items-center relative overflow-hidden"
+        className="w-full p-4 sm:p-6 flex flex-col items-center relative overflow-hidden"
       >
-        {/* Ambient breathing background glows for alive kiosk feel */}
+        {/* Living aura ambient blobs */}
         <div className="absolute -top-20 -right-20 w-56 h-56 rounded-full bg-amber-400/20 blur-3xl pointer-events-none animate-pulse-glow" />
         <div className="absolute -bottom-20 -left-20 w-56 h-56 rounded-full bg-emerald-400/15 blur-3xl pointer-events-none animate-pulse-glow" />
 
-        {/* Navigation & Step */}
+        {/* Top Bar with Back Button */}
         <div className="w-full flex items-center justify-between mb-3 z-10">
           <button
             onClick={onBack}
-            className="flex items-center gap-1 text-xs font-bold text-neutral-600 hover:text-brand-dark px-3 py-1.5 rounded-full bg-white/80 border border-neutral-200 hover:bg-white transition active:scale-95 shadow-2xs"
+            className="p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-500 transition flex items-center gap-1 text-xs font-bold tap-feedback"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
+            <ArrowLeft className="w-4 h-4" />
             <span>Change Phone</span>
           </button>
-          <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-black px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-            <span>Step 2 of 2: Verification</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+              Step 2 of 2
+            </span>
           </div>
         </div>
 
-        {/* Reserved Voucher Banner with Subtle Breathing Pulse */}
+        {/* Value Banner with Living subtle pulse */}
         <div className="w-full p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-amber-400/15 to-amber-500/10 border border-amber-300/80 flex items-center gap-3 mb-4 shadow-2xs animate-subtle-pulse relative z-10">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center shrink-0 shadow-sm font-black text-lg">
-            ₹
+            {isFreeGift ? <Gift className="w-5 h-5 text-white" /> : "₹"}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
-                ₹{campaign.rewardAmount} Voucher Reserved
+                {isFreeGift ? "Free Gift Voucher Reserved" : `₹${campaign.rewardAmount} Voucher Reserved`}
               </span>
               <span className="text-[11px] text-neutral-500 font-bold">
                 +91 {phone.slice(0, 5)} {phone.slice(5)}
               </span>
             </div>
             <p className="text-xs sm:text-sm font-extrabold text-neutral-900 mt-0.5 leading-snug">
-              Complete the 2 required channels below to activate your voucher!
+              {isFreeGift
+                ? "Complete the 2 required channels below to activate your Free Gift!"
+                : "Complete the 2 required channels below to activate your voucher!"}
             </p>
           </div>
         </div>
@@ -426,14 +443,18 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
             ) : isMandatoryCompleted ? (
               <>
                 <Sparkles className="w-5 h-5 text-amber-200" />
-                <span>UNLOCK MY ₹{campaign.rewardAmount} VOUCHER NOW</span>
+                <span>
+                  {isFreeGift ? "UNLOCK MY FREE GIFTS NOW" : `UNLOCK MY ₹${campaign.rewardAmount} VOUCHER NOW`}
+                </span>
                 <ArrowRight className="w-5 h-5 ml-1" />
               </>
             ) : (
               <>
                 <Lock className="w-4 h-4 text-neutral-400" />
                 <span>
-                  Complete Both Steps to Unlock ₹{campaign.rewardAmount} ({completedCount}/2)
+                  {isFreeGift
+                    ? `Complete Both Steps to Unlock Free Gifts (${completedCount}/2)`
+                    : `Complete Both Steps to Unlock ₹${campaign.rewardAmount} (${completedCount}/2)`}
                 </span>
               </>
             )}
@@ -446,7 +467,7 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
               </span>
             ) : (
               <span>
-                * Redirecting to both Instagram &amp; WhatsApp VIP community is required to activate your ₹{campaign.rewardAmount} voucher.
+                * Redirecting to both Instagram &amp; WhatsApp VIP community is required to activate your {isFreeGift ? "Free Gift voucher" : `₹${campaign.rewardAmount} voucher`}.
               </span>
             )}
           </p>

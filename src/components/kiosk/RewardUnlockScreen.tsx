@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Campaign, Voucher } from "@/lib/types";
+import { Campaign, Voucher, isFreeGiftOffer, getRewardTitle } from "@/lib/types";
 import {
   CheckCircle,
   Copy,
@@ -13,6 +13,7 @@ import {
   Watch,
   Zap,
   ArrowRight,
+  Gift,
 } from "lucide-react";
 import { GlassCard } from "../ui/GlassCard";
 import { QRCodeSVG } from "qrcode.react";
@@ -31,6 +32,8 @@ export const RewardUnlockScreen: React.FC<RewardUnlockScreenProps> = ({
   isDuplicate = false,
   onFinish,
 }) => {
+  const isFreeGift = isFreeGiftOffer(campaign) || voucher.value <= 1;
+  const rewardTitle = getRewardTitle(campaign);
   const [copied, setCopied] = useState<boolean>(false);
   const [sentMessage, setSentMessage] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(90);
@@ -87,15 +90,19 @@ export const RewardUnlockScreen: React.FC<RewardUnlockScreenProps> = ({
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-extrabold text-[10px] sm:text-xs uppercase tracking-wider mb-2 sm:mb-3">
           <Sparkles className="w-3 h-3 text-emerald-600 shrink-0" />
           <span>
-            {isDuplicate ? "Voucher Active & Ready" : "New SaiKeshav Enterprises Voucher Unlocked!"}
+            {isDuplicate
+              ? isFreeGift ? "Free Gift Pass Ready" : "Voucher Active & Ready"
+              : isFreeGift ? "New SaiKeshav Enterprises Free Gift Pass Unlocked!" : "New SaiKeshav Enterprises Voucher Unlocked!"}
           </span>
         </div>
 
         <h2 className="text-xl sm:text-3xl font-extrabold text-brand-dark tracking-tight leading-snug">
-          ₹{voucher.value} Off Your Gadget Purchase
+          {isFreeGift ? "Instant Free Gift Pass Unlocked!" : `₹${voucher.value} Off Your Gadget Purchase`}
         </h2>
         <p className="text-[11px] sm:text-sm text-neutral-500 font-medium mt-0.5 mb-3 sm:mb-4">
-          Present this barcode or code at the New SaiKeshav Enterprises billing desk, Roxy Road, Baripada.
+          {isFreeGift
+            ? "Present this barcode or code at the New SaiKeshav Enterprises billing desk, Roxy Road, Baripada to collect your Free Gift."
+            : "Present this barcode or code at the New SaiKeshav Enterprises billing desk, Roxy Road, Baripada."}
         </p>
 
         {/* Voucher Ticket Component with Living Subtle Pulse */}
@@ -110,8 +117,15 @@ export const RewardUnlockScreen: React.FC<RewardUnlockScreenProps> = ({
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-neutral-400">
                 New SaiKeshav Enterprises Pass
               </span>
-              <div className="text-xl sm:text-2xl font-black text-brand-dark">
-                ₹{voucher.value} OFF
+              <div className="text-xl sm:text-2xl font-black text-brand-dark flex items-center gap-1.5">
+                {isFreeGift ? (
+                  <>
+                    <Gift className="w-5 h-5 text-amber-600" />
+                    <span>FREE GIFT PASS</span>
+                  </>
+                ) : (
+                  <span>₹{voucher.value} OFF</span>
+                )}
               </div>
             </div>
             <div className="text-right">

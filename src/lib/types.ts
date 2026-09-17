@@ -12,6 +12,8 @@ export interface Campaign {
   headline: string;
   subheadline: string;
   rewardAmount: number;
+  rewardType?: "FREE_GIFT" | "DISCOUNT";
+  rewardTitle?: string;
   minOrderValue: number;
   validDays: number;
   validFrom: string;
@@ -35,6 +37,23 @@ export interface Campaign {
   googleSheetUrl?: string;
   googleSheetWebhookUrl?: string;
   isActive: boolean;
+}
+
+export function isFreeGiftOffer(campaign?: Partial<Campaign> | null): boolean {
+  if (!campaign) return true; // Default to Free Gift
+  if (campaign.rewardType === "FREE_GIFT") return true;
+  if (campaign.rewardTitle && /gift/i.test(campaign.rewardTitle)) return true;
+  if (campaign.headline && /gift/i.test(campaign.headline)) return true;
+  if (campaign.subheadline && /gift/i.test(campaign.subheadline)) return true;
+  if (typeof campaign.rewardAmount === "number" && campaign.rewardAmount <= 1) return true;
+  return false;
+}
+
+export function getRewardTitle(campaign?: Partial<Campaign> | null): string {
+  if (!campaign) return "Instant Free Gifts";
+  if (campaign.rewardTitle && campaign.rewardTitle.trim()) return campaign.rewardTitle;
+  if (isFreeGiftOffer(campaign)) return "Instant Free Gifts";
+  return `₹${campaign.rewardAmount || 500}`;
 }
 
 export interface Customer {

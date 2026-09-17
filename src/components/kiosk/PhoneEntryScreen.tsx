@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Campaign, Voucher } from "@/lib/types";
+import { Campaign, Voucher, isFreeGiftOffer, getRewardTitle } from "@/lib/types";
 import {
   ArrowRight,
   ArrowLeft,
@@ -35,9 +35,11 @@ interface PhoneEntryScreenProps {
 export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
   campaign,
   onSubmitPhone,
-  onBack,
   onViewExistingVoucher,
+  onBack,
 }) => {
+  const isFreeGift = isFreeGiftOffer(campaign);
+  const rewardTitle = getRewardTitle(campaign);
   const [step, setStep] = useState<"PHONE" | "WHATSAPP_VERIFY">("PHONE");
   const [phone, setPhone] = useState<string>("");
   const [consent, setConsent] = useState<boolean>(true);
@@ -249,7 +251,7 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
                   className="mt-0.5 w-4 h-4 rounded text-amber-600 focus:ring-amber-500 border-neutral-300 cursor-pointer transition-transform active:scale-90"
                 />
                 <span className="text-[10px] sm:text-[11px] text-neutral-500 leading-tight">
-                  I agree to receive my ₹{campaign.rewardAmount} voucher via SMS/WhatsApp and confirm I am a store customer.
+                  I agree to receive my {isFreeGift ? "Free Gift" : `₹${campaign.rewardAmount}`} voucher via SMS/WhatsApp and confirm I am a store customer.
                 </span>
               </label>
             </div>
@@ -282,7 +284,7 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
                   </>
                 ) : (
                   <>
-                    <span>CONTINUE TO CLAIM</span>
+                    <span>{isFreeGift ? "CLAIM FREE GIFTS" : "CONTINUE TO CLAIM"}</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -382,7 +384,7 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
               <p className="text-[10px] text-center mt-1.5 font-medium transition-colors">
                 {hasSentWhatsApp ? (
                   <span className="text-emerald-700 font-bold">
-                    ✓ Action verified! Tap above to claim your ₹{campaign.rewardAmount} voucher.
+                    ✓ Action verified! Tap above to claim your {isFreeGift ? "Free Gifts" : `₹${campaign.rewardAmount} voucher`}.
                   </span>
                 ) : (
                   <span className="text-neutral-400">

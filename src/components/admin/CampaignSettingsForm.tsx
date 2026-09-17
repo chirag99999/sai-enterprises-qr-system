@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Campaign, Store } from "@/lib/types";
+import { Campaign, Store, isFreeGiftOffer } from "@/lib/types";
 import {
   Save,
   CheckCircle2,
@@ -11,6 +11,7 @@ import {
   Tag,
   DollarSign,
   ShieldAlert,
+  Gift,
 } from "lucide-react";
 import { GlassCard } from "../ui/GlassCard";
 
@@ -137,10 +138,103 @@ export const CampaignSettingsForm: React.FC<CampaignSettingsFormProps> = ({
         )}
 
         {/* Section 1: Reward & Conditions */}
+        <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-black text-amber-950 uppercase tracking-wider flex items-center gap-1.5">
+              <Gift className="w-4 h-4 text-amber-700" />
+              <span>Offer Display Mode</span>
+            </span>
+            <span className="text-[11px] font-bold text-amber-800">
+              {formData.rewardType === "FREE_GIFT" || isFreeGiftOffer(formData)
+                ? "🎁 Free Gift Mode Active"
+                : "🏷️ Discount Voucher Mode"}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+            <button
+              type="button"
+              onClick={() =>
+                setFormData({
+                  ...formData,
+                  rewardType: "FREE_GIFT",
+                  rewardTitle: "Instant Free Gifts",
+                  headline: "Get Free gifts on scanning & filling the QR",
+                  subheadline: "Complete 2 quick steps and unlock an instant Free Gifts.",
+                  rewardAmount: 1,
+                  minOrderValue: 1,
+                })
+              }
+              className={`p-3 rounded-xl border text-left flex items-start gap-2.5 transition ${
+                formData.rewardType === "FREE_GIFT" || isFreeGiftOffer(formData)
+                  ? "bg-white border-amber-500 shadow-sm ring-2 ring-amber-400/30"
+                  : "bg-white/60 border-neutral-200 hover:bg-white"
+              }`}
+            >
+              <div className="p-1.5 rounded-lg bg-amber-100 text-amber-800 shrink-0">
+                <Gift className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-xs font-black text-neutral-900">
+                  🎁 Instant Free Gifts
+                </div>
+                <p className="text-[11px] text-neutral-500 leading-tight mt-0.5">
+                  Writes &quot;Instant Free Gifts&quot; across all kiosk screens, buttons, and customer passes instead of ₹500.
+                </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                setFormData({
+                  ...formData,
+                  rewardType: "DISCOUNT",
+                  rewardTitle: "₹500 Voucher",
+                  rewardAmount: 500,
+                  minOrderValue: 999,
+                })
+              }
+              className={`p-3 rounded-xl border text-left flex items-start gap-2.5 transition ${
+                formData.rewardType === "DISCOUNT" && !isFreeGiftOffer(formData)
+                  ? "bg-white border-amber-500 shadow-sm ring-2 ring-amber-400/30"
+                  : "bg-white/60 border-neutral-200 hover:bg-white"
+              }`}
+            >
+              <div className="p-1.5 rounded-lg bg-neutral-100 text-neutral-800 shrink-0">
+                <Tag className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-xs font-black text-neutral-900">
+                  🏷️ Cash Discount Voucher
+                </div>
+                <p className="text-[11px] text-neutral-500 leading-tight mt-0.5">
+                  Displays specific cash discount (e.g. ₹500 OFF) with minimum spend requirement.
+                </p>
+              </div>
+            </button>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-neutral-700 mb-1">
+              Custom Reward Headline / Display Text
+            </label>
+            <input
+              type="text"
+              value={formData.rewardTitle || (isFreeGiftOffer(formData) ? "Instant Free Gifts" : `₹${formData.rewardAmount} Voucher`)}
+              onChange={(e) =>
+                setFormData({ ...formData, rewardTitle: e.target.value })
+              }
+              placeholder="e.g. Instant Free Gifts"
+              className="w-full px-3.5 py-2 rounded-xl bg-white border border-neutral-300 font-bold text-xs text-brand-dark focus:ring-2 focus:ring-amber-500 outline-none"
+            />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <div>
             <label className="block text-xs font-bold text-neutral-600 mb-1.5">
-              Reward Amount (₹)
+              Reward Value (₹)
             </label>
             <input
               type="number"
@@ -152,7 +246,9 @@ export const CampaignSettingsForm: React.FC<CampaignSettingsFormProps> = ({
               required
             />
             <span className="text-[11px] text-neutral-400 mt-1 block">
-              Default ₹500 voucher
+              {isFreeGiftOffer(formData)
+                ? "Set 1 for Free Gift reward"
+                : "Discount amount in Rupees"}
             </span>
           </div>
 
@@ -170,7 +266,9 @@ export const CampaignSettingsForm: React.FC<CampaignSettingsFormProps> = ({
               required
             />
             <span className="text-[11px] text-neutral-400 mt-1 block">
-              Protects unit economics
+              {formData.minOrderValue <= 1
+                ? "Unconditional free gift for store visitors"
+                : "Protects unit economics"}
             </span>
           </div>
 

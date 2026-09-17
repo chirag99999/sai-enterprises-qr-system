@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Campaign, Store } from "@/lib/types";
+import { Campaign, Store, isFreeGiftOffer, getRewardTitle } from "@/lib/types";
 import {
   ChevronLeft,
   Heart,
@@ -59,6 +59,9 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   const toggleHeart = () => {
     setIsLiked((prev) => !prev);
   };
+
+  const isFreeGift = isFreeGiftOffer(campaign);
+  const rewardTitle = getRewardTitle(campaign);
 
   return (
     <div className="w-full max-w-[460px] mx-auto flex flex-col justify-between min-h-[94vh] bg-[#FAF8F5] text-neutral-900 px-3.5 sm:px-4 py-3 sm:py-4 rounded-3xl shadow-sm border border-neutral-200/60 relative overflow-hidden select-none">
@@ -138,7 +141,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         </div>
       )}
 
-      {/* HERO SECTION: INSTANT ₹500 OFFER + GADGETS SHOWCASE */}
+      {/* HERO SECTION: INSTANT FREE GIFTS OFFER + GADGETS SHOWCASE */}
       <div className="relative mt-1 sm:mt-2 grid grid-cols-12 items-center gap-1 z-10">
         {/* Left Text & Badges Column (7 cols) */}
         <div className="col-span-7 pr-1">
@@ -147,24 +150,39 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             I N S T A N T
           </div>
 
-          {/* Value Heading: ₹500 OFF */}
-          <div className="flex items-baseline gap-1">
-            <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight bg-gradient-to-br from-[#B37B24] via-[#DE9F35] to-[#996515] bg-clip-text text-transparent drop-shadow-xs">
-              ₹{campaign.rewardAmount}
-            </span>
-            <span className="text-lg sm:text-2xl font-black text-neutral-900 tracking-tight ml-0.5">
-              OFF
-            </span>
-          </div>
+          {/* Value Heading: FREE GIFTS or ₹500 OFF */}
+          {isFreeGift ? (
+            <div className="flex flex-col items-start leading-none py-0.5">
+              <span className="text-3xl sm:text-4xl md:text-[44px] font-black tracking-tight bg-gradient-to-br from-[#B37B24] via-[#DE9F35] to-[#996515] bg-clip-text text-transparent drop-shadow-xs leading-tight">
+                FREE GIFTS
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight bg-gradient-to-br from-[#B37B24] via-[#DE9F35] to-[#996515] bg-clip-text text-transparent drop-shadow-xs">
+                ₹{campaign.rewardAmount}
+              </span>
+              <span className="text-lg sm:text-2xl font-black text-neutral-900 tracking-tight ml-0.5">
+                OFF
+              </span>
+            </div>
+          )}
 
-          {/* Subheading: ON YOUR NEXT GADGET */}
-          <div className="text-[9.5px] sm:text-[11px] font-black tracking-[0.16em] text-neutral-900 uppercase mt-0.5 leading-tight">
-            ON YOUR NEXT GADGET
+          {/* Subheading: ON SCANNING & FILLING THE QR or ON YOUR NEXT GADGET */}
+          <div className="text-[9.5px] sm:text-[11px] font-black tracking-[0.14em] text-neutral-900 uppercase mt-0.5 leading-tight">
+            {campaign.headline && !campaign.headline.toLowerCase().includes("500")
+              ? campaign.headline.toUpperCase()
+              : isFreeGift
+              ? "ON SCANNING & FILLING QR"
+              : "ON YOUR NEXT GADGET"}
           </div>
 
           {/* Paragraph */}
           <p className="text-[10px] sm:text-[11px] text-neutral-600 font-normal leading-relaxed mt-2 max-w-[210px]">
-            Complete 2 quick steps and unlock an instant ₹{campaign.rewardAmount} voucher on Smartphones, Audio, Smartwatches &amp; Premium Accessories.
+            {campaign.subheadline ||
+              (isFreeGift
+                ? "Complete 2 quick steps and unlock instant Free Gifts on Smartphones, Audio, Smartwatches & Accessories."
+                : `Complete 2 quick steps and unlock an instant ₹${campaign.rewardAmount} voucher on Smartphones, Audio, Smartwatches & Premium Accessories.`)}
           </p>
 
           {/* 3 Benefit Badges Row */}
@@ -286,20 +304,22 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               2
             </div>
             <div className="text-left leading-tight">
-              <div className="text-[11px] sm:text-xs font-extrabold text-neutral-900">Get ₹{campaign.rewardAmount} Voucher</div>
+              <div className="text-[11px] sm:text-xs font-extrabold text-neutral-900">
+                {isFreeGift ? "Get Free Gifts" : `Get ₹${campaign.rewardAmount} Voucher`}
+              </div>
               <div className="text-[9.5px] sm:text-[10px] text-neutral-500 font-medium">Instantly</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* PRIMARY CTA BUTTON: Claim My ₹500 */}
+      {/* PRIMARY CTA BUTTON: Claim Instant Free Gifts */}
       <div className="w-full mt-3 sm:mt-4 z-10">
         <button
           onClick={onStartClaim}
           className="w-full py-3.5 sm:py-4 px-6 rounded-full bg-gradient-to-r from-[#C28E3A] via-[#B88230] to-[#996515] hover:brightness-105 active:scale-[0.98] text-white font-extrabold text-base sm:text-lg shadow-lg shadow-amber-950/20 flex items-center justify-center relative transition-all group shine-effect animate-subtle-pulse tap-feedback cursor-pointer"
         >
-          <span>Claim My ₹{campaign.rewardAmount}</span>
+          <span>{isFreeGift ? "Claim Instant Free Gifts" : `Claim My ₹${campaign.rewardAmount}`}</span>
           <ArrowRight className="w-5 h-5 absolute right-6 text-white stroke-[2.5] group-hover:translate-x-1.5 transition-transform" />
         </button>
       </div>
@@ -332,7 +352,9 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           onClick={() => setShowTerms(true)}
           className="text-[10px] text-neutral-400 hover:text-neutral-700 underline decoration-neutral-300 underline-offset-2 transition"
         >
-          Terms &amp; Conditions (Min Purchase ₹{campaign.minOrderValue})
+          {campaign.minOrderValue <= 1 || isFreeGift
+            ? "Terms & Conditions (Free In-Store Gift)"
+            : `Terms & Conditions (Min Purchase ₹${campaign.minOrderValue})`}
         </button>
       </footer>
 

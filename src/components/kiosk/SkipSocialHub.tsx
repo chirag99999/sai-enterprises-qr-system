@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Campaign } from "@/lib/types";
+import { Campaign, isFreeGiftOffer } from "@/lib/types";
 import {
   Instagram,
   Youtube,
@@ -234,7 +234,9 @@ export const SkipSocialHub: React.FC<SkipSocialHubProps> = ({
                 <span>Instant In-Store Reward Available</span>
               </div>
               <p className="text-xs text-neutral-800 font-medium mt-0.5">
-                Claim your ₹{campaign.rewardAmount} voucher right now to use on smartphones, smartwatches, or premium audio!
+                {isFreeGiftOffer(campaign)
+                  ? "Claim your Instant Free Gift right now on smartphones, smartwatches, or premium audio!"
+                  : `Claim your ₹${campaign.rewardAmount} voucher right now to use on smartphones, smartwatches, or premium audio!`}
               </p>
             </div>
           </div>
@@ -242,7 +244,7 @@ export const SkipSocialHub: React.FC<SkipSocialHubProps> = ({
             onClick={onBackToOffer}
             className="shrink-0 py-2.5 px-5 rounded-xl bg-brand-dark hover:bg-black text-brand-yellow font-extrabold text-xs tracking-wide shadow-md transition active:scale-95 flex items-center gap-1.5"
           >
-            <span>Claim ₹{campaign.rewardAmount} Voucher</span>
+            <span>{isFreeGiftOffer(campaign) ? "Claim Free Gifts" : `Claim ₹${campaign.rewardAmount} Voucher`}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

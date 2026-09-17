@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Campaign } from "@/lib/types";
+import { Campaign, isFreeGiftOffer } from "@/lib/types";
 import { X, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { GlassCard } from "../ui/GlassCard";
 
@@ -17,6 +17,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
   onClose,
 }) => {
   if (!isOpen) return null;
+  const isFreeGift = isFreeGiftOffer(campaign);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fadeIn">
@@ -31,10 +32,10 @@ export const TermsModal: React.FC<TermsModalProps> = ({
             </div>
             <div>
               <h3 className="font-bold text-lg text-brand-dark">
-                Campaign Terms & Validity
+                Campaign Terms &amp; Validity
               </h3>
               <p className="text-xs text-neutral-500">
-                ₹{campaign.rewardAmount} Voucher Program Rules
+                {isFreeGift ? "Instant Free Gift Program Rules" : `₹${campaign.rewardAmount} Voucher Program Rules`}
               </p>
             </div>
           </div>
@@ -50,13 +51,13 @@ export const TermsModal: React.FC<TermsModalProps> = ({
           <div className="p-3.5 rounded-2xl bg-brand-surface border border-neutral-200/80 flex items-center justify-between">
             <span className="font-semibold text-neutral-600">Reward Value:</span>
             <span className="font-bold text-base text-brand-dark">
-              ₹{campaign.rewardAmount} OFF
+              {isFreeGift ? "Instant Free Gift (100% Free)" : `₹${campaign.rewardAmount} OFF`}
             </span>
           </div>
           <div className="p-3.5 rounded-2xl bg-brand-surface border border-neutral-200/80 flex items-center justify-between">
             <span className="font-semibold text-neutral-600">Minimum Order:</span>
             <span className="font-bold text-brand-dark">
-              ₹{campaign.minOrderValue}
+              {campaign.minOrderValue <= 1 ? "None (In-Store Walk-in)" : `₹${campaign.minOrderValue}`}
             </span>
           </div>
           <div className="p-3.5 rounded-2xl bg-brand-surface border border-neutral-200/80 flex items-center justify-between">
