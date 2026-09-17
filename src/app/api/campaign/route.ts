@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getCampaign, getStores, updateCampaign } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const campaign = getCampaign();
@@ -11,7 +14,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(req: Request) {
+async function handleUpdate(req: Request) {
   try {
     const body = await req.json();
     const updated = updateCampaign(body);
@@ -19,4 +22,12 @@ export async function PUT(req: Request) {
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
+}
+
+export async function PUT(req: Request) {
+  return handleUpdate(req);
+}
+
+export async function POST(req: Request) {
+  return handleUpdate(req);
 }

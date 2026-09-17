@@ -38,15 +38,35 @@ export const CampaignSettingsForm: React.FC<CampaignSettingsFormProps> = ({
     setStatusMsg(null);
 
     try {
-      const res = await fetch("/api/campaign", {
-        method: "PUT",
+      // POST is supported universally without static CDN cache interference
+      let res = await fetch("/api/campaign", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
+
+      // Fallback to PUT if a proxy/server expects PUT
+      if (res.status === 405) {
+        res = await fetch("/api/campaign", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+      }
+
+      const text = await res.text();
+      let data: any = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error(
+          `Server returned unexpected format (${res.status}): ${text.slice(0, 120)}`
+        );
+      }
+
       setSaving(false);
 
-      if (data.success && data.campaign) {
+      if (res.ok && data.success && data.campaign) {
         setStatusMsg({
           type: "success",
           text: "Campaign settings saved and updated across all kiosks immediately!",
@@ -55,14 +75,14 @@ export const CampaignSettingsForm: React.FC<CampaignSettingsFormProps> = ({
       } else {
         setStatusMsg({
           type: "error",
-          text: data.error || "Failed to update campaign",
+          text: data.error || `Failed to update campaign (${res.status})`,
         });
       }
     } catch (err: any) {
       setSaving(false);
       setStatusMsg({
         type: "error",
-        text: err.message || "Network error occurred",
+        text: err.message || "Network error occurred while saving",
       });
     }
   };

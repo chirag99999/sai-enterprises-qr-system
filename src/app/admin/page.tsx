@@ -70,25 +70,31 @@ export default function AdminPage() {
     setLoading(true);
     try {
       // 1. Campaign & Stores
-      const campRes = await fetch("/api/campaign");
-      const campData = await campRes.json();
-      if (campData.success) {
-        if (campData.campaign) setCampaign(campData.campaign);
-        if (campData.stores) setStores(campData.stores);
+      const campRes = await fetch("/api/campaign", { cache: "no-store" });
+      if (campRes.ok) {
+        const campData = await campRes.json();
+        if (campData.success) {
+          if (campData.campaign) setCampaign(campData.campaign);
+          if (campData.stores) setStores(campData.stores);
+        }
       }
 
       // 2. Funnel Analytics
-      const statsRes = await fetch(`/api/analytics?storeId=${selectedStore}`);
-      const statsData = await statsRes.json();
-      if (statsData.success) {
-        setStats(statsData.stats);
+      const statsRes = await fetch(`/api/analytics?storeId=${selectedStore}`, { cache: "no-store" });
+      if (statsRes.ok) {
+        const statsData = await statsRes.json();
+        if (statsData.success) {
+          setStats(statsData.stats);
+        }
       }
 
       // 3. Vouchers
-      const vchRes = await fetch("/api/vouchers");
-      const vchData = await vchRes.json();
-      if (vchData.success) {
-        setVouchers(vchData.vouchers);
+      const vchRes = await fetch("/api/vouchers", { cache: "no-store" });
+      if (vchRes.ok) {
+        const vchData = await vchRes.json();
+        if (vchData.success) {
+          setVouchers(vchData.vouchers);
+        }
       }
     } catch (e) {
       console.error("Error loading admin data:", e);

@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { getAllVouchers, getStores, getCampaign } from "@/lib/db";
 import { generateGoogleSheetCsv, syncLeadToGoogleSheet, GOOGLE_SHEET_URL } from "@/lib/google-sheets";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
