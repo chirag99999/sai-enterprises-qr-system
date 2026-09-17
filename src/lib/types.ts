@@ -59,6 +59,8 @@ export function getRewardTitle(campaign?: Partial<Campaign> | null): string {
 export interface Customer {
   id: string;
   phone: string;
+  name?: string;
+  dob?: string;
   countryCode: string;
   createdAt: string;
   marketingConsent: boolean;
@@ -68,6 +70,7 @@ export interface Customer {
 export type ClaimSessionStatus =
   | "STARTED"
   | "PHONE_CAPTURED"
+  | "PROFILE_CAPTURED"
   | "REVIEW_OPENED"
   | "COMPLETED"
   | "REJECTED";
@@ -78,6 +81,8 @@ export interface ClaimSession {
   campaignId: string;
   customerId?: string;
   phone?: string;
+  customerName?: string;
+  dob?: string;
   status: ClaimSessionStatus;
   startedAt: string;
   completedAt?: string;
@@ -92,6 +97,8 @@ export interface Voucher {
   campaignId: string;
   customerId: string;
   phone: string;
+  customerName?: string;
+  dob?: string;
   storeId: string;
   value: number;
   minOrderValue: number;

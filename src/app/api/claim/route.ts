@@ -6,12 +6,16 @@ import {
   getCampaign,
   recordEvent,
   registerOrGetCustomer,
+  updateCustomerProfile,
   updateClaimSession,
 } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function POST(req: Request) {
   try {
-    const { action, storeId, phone, sessionId, marketingConsent } = await req.json();
+    const { action, storeId, phone, sessionId, marketingConsent, name, dob } = await req.json();
     const campaign = getCampaign();
 
     if (action === "START_CLAIM") {
@@ -88,9 +92,44 @@ export async function POST(req: Request) {
         customer: {
           id: customer.id,
           phone: cleanPhone,
+          name: customer.name,
+          dob: customer.dob,
         },
         hasExistingVoucher: !!existingVoucher,
         existingVoucher: existingVoucher || null,
+      });
+    }
+
+    if (action === "SUBMIT_PROFILE") {
+      if (!phone) {
+        return NextResponse.json(
+          { success: false, error: "Mobile number is required" },
+          { status: 400 }
+        );
+      }
+      const cleanPhone = phone.replace(/\D/g, "").slice(-10);
+      const customer = updateCustomerProfile(cleanPhone, name, dob);
+      if (sessionId) {
+        updateClaimSession(sessionId, {
+          status: "PROFILE_CAPTURED",
+          customerName: name,
+          dob: dob,
+        });
+        recordEvent(sessionId, storeId || "store-101", "PHONE_VALIDATED", {
+          hasName: !!name,
+          hasDob: !!dob,
+        });
+      }
+      return NextResponse.json({
+        success: true,
+        customer: customer
+          ? {
+              id: customer.id,
+              phone: cleanPhone,
+              name: customer.name,
+              dob: customer.dob,
+            }
+          : null,
       });
     }
 

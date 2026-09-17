@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { issueVoucherForSession, recordEvent } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function POST(req: Request) {
   try {
     const { sessionId, phone, storeId } = await req.json();
@@ -33,6 +36,8 @@ export async function POST(req: Request) {
       await syncLeadToGoogleSheet({
         timestamp: new Date().toISOString(),
         phone: voucher.phone,
+        customerName: voucher.customerName || "",
+        dob: voucher.dob || "",
         storeName: store ? store.name : currentStoreId,
         storeCode: store ? store.code : "",
         voucherCode: voucher.code,

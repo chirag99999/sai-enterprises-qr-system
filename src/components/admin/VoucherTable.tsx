@@ -29,7 +29,8 @@ export const VoucherTable: React.FC<VoucherTableProps> = ({
   const filtered = vouchers.filter((v) => {
     const matchesSearch =
       v.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.phone.includes(searchTerm);
+      v.phone.includes(searchTerm) ||
+      (v.customerName && v.customerName.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesStatus =
       statusFilter === "ALL" ? true : v.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -43,9 +44,11 @@ export const VoucherTable: React.FC<VoucherTableProps> = ({
   const exportCsv = () => {
     const headers = [
       "Voucher Code",
+      "Customer Name",
+      "Date of Birth",
+      "Customer Phone",
       "Value (INR)",
       "Status",
-      "Customer Phone",
       "Store ID",
       "Issued At",
       "Expires At",
@@ -55,9 +58,11 @@ export const VoucherTable: React.FC<VoucherTableProps> = ({
 
     const rows = filtered.map((v) => [
       v.code,
+      v.customerName || "",
+      v.dob || "",
+      `+91${v.phone}`,
       v.value,
       v.status,
-      `+91${v.phone}`,
       v.storeId,
       v.issuedAt,
       v.expiresAt,
@@ -139,8 +144,10 @@ export const VoucherTable: React.FC<VoucherTableProps> = ({
           <thead className="bg-brand-surface text-neutral-500 font-extrabold uppercase tracking-wider text-[10px] border-b border-neutral-200">
             <tr>
               <th className="py-3 px-4">Voucher Code</th>
-              <th className="py-3 px-4">Discount</th>
+              <th className="py-3 px-4">Customer Name</th>
+              <th className="py-3 px-4">Birthday</th>
               <th className="py-3 px-4">Customer Phone</th>
+              <th className="py-3 px-4">Discount</th>
               <th className="py-3 px-4">Status</th>
               <th className="py-3 px-4">Issued Date</th>
               <th className="py-3 px-4">Redeemed At</th>
@@ -150,7 +157,7 @@ export const VoucherTable: React.FC<VoucherTableProps> = ({
           <tbody className="divide-y divide-neutral-100">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-8 text-center text-neutral-400 font-medium">
+                <td colSpan={9} className="py-8 text-center text-neutral-400 font-medium">
                   No vouchers found matching search filters.
                 </td>
               </tr>
@@ -160,11 +167,30 @@ export const VoucherTable: React.FC<VoucherTableProps> = ({
                   <td className="py-3 px-4 font-mono font-bold text-brand-dark">
                     {v.code}
                   </td>
-                  <td className="py-3 px-4 font-black text-brand-dark">
-                    ₹{v.value}
+                  <td className="py-3 px-4 font-bold text-neutral-800">
+                    {v.customerName ? (
+                      <span className="flex items-center gap-1">
+                        <span>{v.customerName}</span>
+                      </span>
+                    ) : (
+                      <span className="text-neutral-400 italic font-normal">—</span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4 text-neutral-600 font-medium">
+                    {v.dob ? (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-pink-700 bg-pink-50 px-2 py-0.5 rounded-md border border-pink-100">
+                        <span>🎂</span>
+                        <span>{v.dob}</span>
+                      </span>
+                    ) : (
+                      <span className="text-neutral-400 italic font-normal">—</span>
+                    )}
                   </td>
                   <td className="py-3 px-4 font-mono font-semibold text-neutral-700">
                     +91 {v.phone.slice(0, 3)}****{v.phone.slice(-3)}
+                  </td>
+                  <td className="py-3 px-4 font-black text-brand-dark">
+                    ₹{v.value}
                   </td>
                   <td className="py-3 px-4">
                     <span

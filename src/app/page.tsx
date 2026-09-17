@@ -6,6 +6,7 @@ import { DEFAULT_CAMPAIGN, DEFAULT_STORES } from "@/lib/seed-data";
 import { KioskHeader } from "@/components/kiosk/KioskHeader";
 import { WelcomeScreen } from "@/components/kiosk/WelcomeScreen";
 import { PhoneEntryScreen } from "@/components/kiosk/PhoneEntryScreen";
+import { CustomerDetailsScreen } from "@/components/kiosk/CustomerDetailsScreen";
 import { ReviewSocialScreen } from "@/components/kiosk/ReviewSocialScreen";
 import { RewardUnlockScreen } from "@/components/kiosk/RewardUnlockScreen";
 import { SkipSocialHub } from "@/components/kiosk/SkipSocialHub";
@@ -13,6 +14,7 @@ import { SkipSocialHub } from "@/components/kiosk/SkipSocialHub";
 type KioskStep =
   | "WELCOME"
   | "PHONE_ENTRY"
+  | "PROFILE_ENTRY"
   | "REVIEW_SOCIAL"
   | "REWARD_UNLOCK"
   | "SKIP_HUB";
@@ -26,6 +28,8 @@ export default function KioskPage() {
   // Flow states
   const [session, setSession] = useState<ClaimSession | null>(null);
   const [phone, setPhone] = useState<string>("");
+  const [customerName, setCustomerName] = useState<string>("");
+  const [dob, setDob] = useState<string>("");
   const [unlockedVoucher, setUnlockedVoucher] = useState<Voucher | null>(null);
   const [isDuplicateVoucher, setIsDuplicateVoucher] = useState<boolean>(false);
   const [unlockLoading, setUnlockLoading] = useState<boolean>(false);
@@ -37,6 +41,8 @@ export default function KioskPage() {
     setCurrentStep("WELCOME");
     setSession(null);
     setPhone("");
+    setCustomerName("");
+    setDob("");
     setUnlockedVoucher(null);
     setIsDuplicateVoucher(false);
     setUnlockLoading(false);
@@ -152,6 +158,10 @@ export default function KioskPage() {
       }
 
       setPhone(submittedPhone);
+      if (data.customer) {
+        if (data.customer.name) setCustomerName(data.customer.name);
+        if (data.customer.dob) setDob(data.customer.dob);
+      }
 
       // If customer already has an existing voucher, return it
       if (data.hasExistingVoucher && data.existingVoucher) {
@@ -162,12 +172,48 @@ export default function KioskPage() {
         };
       }
 
-      // Fresh claim, advance to review step
+      // Fresh claim, advance to profile entry step (Name & DOB)
+      setCurrentStep("PROFILE_ENTRY");
+      return { success: true };
+    } catch (e: any) {
+      return { success: false, error: e.message || "Network error" };
+    }
+  };
+
+  const handleSubmitProfile = async (
+    submittedName: string,
+    submittedDob: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    try {
+      setCustomerName(submittedName);
+      setDob(submittedDob);
+
+      const res = await fetch("/api/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "SUBMIT_PROFILE",
+          phone,
+          name: submittedName,
+          dob: submittedDob,
+          sessionId: session?.sessionId,
+          storeId: currentStore?.id || "store-101",
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        return { success: false, error: data.error };
+      }
+
       setCurrentStep("REVIEW_SOCIAL");
       return { success: true };
     } catch (e: any) {
       return { success: false, error: e.message || "Network error" };
     }
+  };
+
+  const handleSkipProfile = () => {
+    setCurrentStep("REVIEW_SOCIAL");
   };
 
   const handleViewExistingVoucher = (v: Voucher) => {
@@ -275,6 +321,18 @@ export default function KioskPage() {
             />
           )}
 
+          {currentStep === "PROFILE_ENTRY" && (
+            <CustomerDetailsScreen
+              campaign={campaign}
+              phone={phone}
+              initialName={customerName}
+              initialDob={dob}
+              onSubmitProfile={handleSubmitProfile}
+              onSkipProfile={handleSkipProfile}
+              onBack={() => setCurrentStep("PHONE_ENTRY")}
+            />
+          )}
+
           {currentStep === "REVIEW_SOCIAL" && (
             <ReviewSocialScreen
               campaign={campaign}
@@ -282,7 +340,7 @@ export default function KioskPage() {
               onOpenReview={handleOpenReview}
               onSocialClick={handleSocialClick}
               onConfirmCompleted={handleConfirmCompleted}
-              onBack={() => setCurrentStep("PHONE_ENTRY")}
+              onBack={() => setCurrentStep("PROFILE_ENTRY")}
               loading={unlockLoading}
             />
           )}

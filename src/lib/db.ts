@@ -248,7 +248,9 @@ export function findCustomerByPhone(phone: string): Customer | undefined {
 export function registerOrGetCustomer(
   phone: string,
   countryCode: string = "+91",
-  marketingConsent: boolean = true
+  marketingConsent: boolean = true,
+  name?: string,
+  dob?: string
 ): Customer {
   const db = ensureDbFile();
   const cleanPhone = phone.replace(/\D/g, "").slice(-10);
@@ -260,12 +262,45 @@ export function registerOrGetCustomer(
     customer = {
       id: `cust-${cleanPhone}`,
       phone: cleanPhone,
+      name: name?.trim(),
+      dob: dob?.trim(),
       countryCode,
       createdAt: new Date().toISOString(),
       marketingConsent,
       claimsCount: 0,
     };
     db.customers.push(customer);
+    writeDb(db);
+  } else {
+    let changed = false;
+    if (name && name.trim() && customer.name !== name.trim()) {
+      customer.name = name.trim();
+      changed = true;
+    }
+    if (dob && dob.trim() && customer.dob !== dob.trim()) {
+      customer.dob = dob.trim();
+      changed = true;
+    }
+    if (changed) {
+      writeDb(db);
+    }
+  }
+  return customer;
+}
+
+export function updateCustomerProfile(
+  phone: string,
+  name?: string,
+  dob?: string
+): Customer | undefined {
+  const db = ensureDbFile();
+  const cleanPhone = phone.replace(/\D/g, "").slice(-10);
+  const customer = db.customers.find(
+    (c) => c.phone.replace(/\D/g, "").slice(-10) === cleanPhone
+  );
+  if (customer) {
+    if (name !== undefined) customer.name = name.trim();
+    if (dob !== undefined) customer.dob = dob.trim();
     writeDb(db);
   }
   return customer;
@@ -346,9 +381,13 @@ export function issueVoucherForSession(
   );
 
   if (existingVoucher) {
+    if (customer.name && !existingVoucher.customerName) existingVoucher.customerName = customer.name;
+    if (customer.dob && !existingVoucher.dob) existingVoucher.dob = customer.dob;
     updateClaimSession(sessionId, {
       status: "COMPLETED",
       voucherId: existingVoucher.id,
+      customerName: customer.name,
+      dob: customer.dob,
       completedAt: new Date().toISOString(),
     });
     return { voucher: existingVoucher, isDuplicate: true };
@@ -369,6 +408,8 @@ export function issueVoucherForSession(
     campaignId: campaign.id,
     customerId: customer.id,
     phone: cleanPhone,
+    customerName: customer.name,
+    dob: customer.dob,
     storeId,
     value: campaign.rewardAmount,
     minOrderValue: campaign.minOrderValue,
@@ -383,6 +424,8 @@ export function issueVoucherForSession(
   updateClaimSession(sessionId, {
     status: "COMPLETED",
     voucherId: newVoucher.id,
+    customerName: customer.name,
+    dob: customer.dob,
     completedAt: now.toISOString(),
   });
 

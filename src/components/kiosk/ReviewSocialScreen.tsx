@@ -117,11 +117,11 @@ export const ReviewSocialScreen: React.FC<ReviewSocialScreenProps> = ({
             className="p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-500 transition flex items-center gap-1 text-xs font-bold tap-feedback"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Change Phone</span>
+            <span>Back</span>
           </button>
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
-              Step 2 of 2
+              Step 3 of 3: Channels
             </span>
           </div>
         </div>

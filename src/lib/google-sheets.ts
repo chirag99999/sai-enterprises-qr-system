@@ -3,6 +3,8 @@ import { getCampaign, getAllVouchers, getStores } from "./db";
 export interface LeadRecord {
   timestamp: string;
   phone: string;
+  customerName?: string;
+  dob?: string;
   storeName: string;
   storeCode: string;
   voucherCode: string;
@@ -71,6 +73,8 @@ export function generateGoogleSheetCsv(vouchers: any[], stores: any[]): string {
   const headers = [
     "Timestamp",
     "Customer Mobile",
+    "Customer Name",
+    "Date of Birth",
     "Store Location",
     "Store Code",
     "Voucher Code",
@@ -93,6 +97,8 @@ export function generateGoogleSheetCsv(vouchers: any[], stores: any[]): string {
     return [
       `"${dateFormatted}"`,
       `"+91${v.phone}"`,
+      `"${v.customerName || ""}"`,
+      `"${v.dob || ""}"`,
       `"${storeName}"`,
       `"${storeCode}"`,
       `"${v.code}"`,

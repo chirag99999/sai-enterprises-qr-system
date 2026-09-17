@@ -178,7 +178,7 @@ export const PhoneEntryScreen: React.FC<PhoneEntryScreenProps> = ({
             <span>
               {step === "WHATSAPP_VERIFY"
                 ? "Step 1b: WhatsApp Verification"
-                : "Step 1 of 2: Mobile Number"}
+                : "Step 1 of 3: Mobile Number"}
             </span>
           </div>
         </div>
